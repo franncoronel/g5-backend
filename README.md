@@ -1,6 +1,6 @@
-# g5-backend
+# 🎥 7Frames  - Recomendador de cine y series
 
-## Estructura
+## Estructura del proyecto
 - `src/` — Carpeta para modelos y scrips
 - `data/` — Archivos de datos y datasets
 - `requirements.txt` — Dependencias de Python
