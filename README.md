@@ -11,6 +11,10 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 * Melody Oviedo Morales
 * Carla Rocca
 
+---  
+## Tecnologías Utilizadas
+* Python
+
 ---
 ## Estructura
 `G5-BACKEND`/  
@@ -22,22 +26,21 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 
 ---
 ## Setup
-### Linux o MAC
-1. Generar un entorno virtual:
-   ```
-   python3 -m venv .venv
-   ```
-2. Activar el entorno virtual:
-    ```
-    source .venv/bin/activate
-    ```
-3. Una vez activado el entorno virtual, instalar las dependencias:
-   ```
-   pip install -r requirements.txt
-   ```
+### Linux/MacOS  
+1. Generar un entorno virtual:  
+```
+python3 -m venv .venv  
+```
+2. Activar el entorno virtual:  
+```
+source .venv/bin/activate  
+```
+3. Una vez activado el entorno virtual, instalar las dependencias:  
+```
+pip install -r requirements.txt  
+```  
 
----
-### Windows  
+### Windows    
 1. Creo El entorno  
 ```  
 python -m venv .venv  
