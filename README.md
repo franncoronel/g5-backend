@@ -19,10 +19,17 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 ## Estructura
 `G5-BACKEND`/  
 │  
-├─ `data/` — Carpeta para modelos y scrips  
-├─ `src/` — Archivos de datos y datasets  
+├─ `data/`                         — Archivos de datos y datasets  
+│     └─ `processed/`                — datos limpios/listos para análisis  
+│  
+├─ `src/`  
+│   └─ `data_analysis`  
+│  
+├─ `notebooks/`                    — Jupyter Notebooks (exploración, pruebas)  
+│  
 ├─ `README.md`  
-└─ `requirements.txt` — Dependencias de Python  
+├─ `requirements.txt`              — Dependencias de Python    
+└─ `.gitignore`                    — exclusiones  
 
 ---
 ## Setup
