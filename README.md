@@ -66,12 +66,8 @@ py -m venv .venv
 3. Actualizo el pip
 ```bash
 python -m pip install --upgrade pip
-```
-4. Instalo la biblioteca para comunicación con el kernel de python
-```bash
-pip install jupyter ipykernel
-```
-5. Instalo los requerimientos
+```  
+4. Instalo los requerimientos
 ```bash
 pip install -r requirements.txt
 ```
