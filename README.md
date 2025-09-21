@@ -61,9 +61,9 @@ python -m venv .venv
 3. Actualizo el pip  
 ```
 python -m pip install --upgrade pip  
+```  
+4. Instalo la biblioteca para comunicación con el kernel de python  
 ```
-4. Instalo la biblioteca para comunicacion con el kernel de python
-
 pip install jupyter ipykernel
 ```
 5. Instalo los requerimientos  
