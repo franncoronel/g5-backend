@@ -22,6 +22,8 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 ├─ `data/`                         — Archivos de datos y datasets  
 │     └─ `processed/`                — datos limpios/listos para análisis  
 │  
+├─ `scripts`                        - Scripts para ejecutar procesos  
+│     └─ `run_data_cleaning.py`     - Ejecuta en orden los módulos de análisis  
 ├─ `src/`  
 │   └─ `data_analysis`  
 │  
