@@ -16,20 +16,20 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 * Python
 
 ---
-## Estructura
-`G5-BACKEND`/
-│
-├─ `data/`                         — Archivos de datos y datasets
-│     └─ `processed/`                — datos limpios/listos para análisis
-│
-├─ `src/`
-│   └─ `data_analysis`
-│
-├─ `notebooks/`                    — Jupyter Notebooks (exploración, pruebas)
-│
-├─ `README.md`
-├─ `requirements.txt`              — Dependencias de Python
-└─ `.gitignore`                    — exclusiones
+## Estructura  
+`G5-BACKEND`/  
+│  
+├─ `data/`                         — Archivos de datos y datasets  
+│     └─ `processed/`                — datos limpios/listos para análisis  
+│  
+├─ `src/`  
+│   └─ `data_analysis`  
+│  
+├─ `notebooks/`                    — Jupyter Notebooks (exploración, pruebas)  
+│  
+├─ `README.md`  
+├─ `requirements.txt`              — Dependencias de Python  
+└─ `.gitignore`                    — exclusiones  
 
 ---
 ## Setup
@@ -61,17 +61,22 @@ py -m venv .venv
 2. Activo el entorno
 ```bash
 .\.venv\Scripts\Activate
+```  
+Si te tira error de ejecución de scripts, ejecutá primero  
+```bash
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```  
+Luego...
+```bash
+.\.venv\Scripts\Activate
 ```
 
 3. Actualizo el pip
 ```bash
 python -m pip install --upgrade pip
-```
-4. Instalo la biblioteca para comunicación con el kernel de python
-```bash
-pip install jupyter ipykernel
-```
-5. Instalo los requerimientos
+```  
+
+4. Instalo los requerimientos
 ```bash
 pip install -r requirements.txt
 ```
