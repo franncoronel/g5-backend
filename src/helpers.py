@@ -107,6 +107,12 @@ class DataCleaner(DatasetManager):
     
     return df_limpio
   
+  def mostrar_registros_filtrados(self,df_sin_filtrar,df_filtrado):
+    registros_eliminados = len(df_sin_filtrar) - len(df_filtrado)
+    print(f"Registros originales: {len(df_sin_filtrar):,}")
+    print(f"Registros después de eliminar nulos: {len(df_filtrado):,}")
+    print(f"Registros eliminados: {registros_eliminados:,} ({(registros_eliminados/len(df_sin_filtrar)*100):.2f}%)")
+
   def filtrar_dataframe(self, df, filtros):
     """Filtra un DataFrame según un diccionario de condiciones.
     df: DataFrame a filtrar
