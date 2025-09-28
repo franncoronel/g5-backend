@@ -22,6 +22,16 @@ class DatasetManager:
     #print(f"Archivo guardado en: {ruta}")
     print(f"Archivo guardado: {nombre_archivo}")
 
+  def ver_preview(self, ruta_archivo, n=4, sep="\t", **kwargs):
+    """Muestra las columnas y las primeras `n` filas de un archivo TSV/CSV."""
+    if not os.path.exists(ruta_archivo):
+      raise FileNotFoundError(f"No se encontró el archivo: {ruta_archivo}")
+      
+    df = pd.read_csv(ruta_archivo, sep=sep, nrows=n, **kwargs)
+    print("Columnas:", list(df.columns))
+    print("\nPrimeras filas:")
+    print(df.head(n))
+    return df
 
 
 class DataCleaner(DatasetManager):
