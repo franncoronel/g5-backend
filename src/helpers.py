@@ -143,3 +143,8 @@ class DataCleaner(DatasetManager):
     """Elimina columnas de un DataFrame."""
 
     return df.drop(columns=columnas, errors='ignore') # errors='ignore' evita errores si alguna columna no existe
+  
+  def mantener_columnas(self, df, columnas):
+    """Mantiene solo las columnas especificadas en el DataFrame."""
+    return df[columnas]
+  
