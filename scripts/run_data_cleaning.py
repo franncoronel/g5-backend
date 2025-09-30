@@ -16,11 +16,11 @@ def correr_comando(commando):
 
 def main():
   commandos = [ "python -m src.data_analysis.titles",
-                # "python -m src.data_analysis.crew",
+                "python -m src.data_analysis.crew",
                 "python -m src.data_analysis.akas",
                 "python -m src.data_analysis.ratings",
-                # "python -m src.data_analysis.principals",
-                # "python -m src.data_analysis.name"
+                "python -m src.data_analysis.principals",
+                "python -m src.data_analysis.name"
               ]
   
   for cmd in commandos:
