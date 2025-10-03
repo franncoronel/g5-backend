@@ -29,7 +29,8 @@ def main():
   # print(f"Filtrado akas -> {len(df_akas):,} registros")
 
   df_akas = cleaner.mantener_columnas(df_akas, columnas_a_mantener)
-
+  
+  df_akas = df_akas.rename(columns={"titleId": 'tconst'})
   # Guardo Archivo
   cleaner.guardar_csv(df_akas, "alias_2019.csv")
 

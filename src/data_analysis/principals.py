@@ -21,7 +21,7 @@ def main():
 
   cleaner = DataCleaner(RUTA_PRINCIPALES, DIR_DATA_PROCESADA)
   
-  columnas_a_mantener = ["tconst", "nconst", "category", "job", "characters"]
+  columnas_a_mantener = ["tconst", "nconst", "category", "characters"]  #,"job"
   listado_trabajos=["actor", "actress", "self", "director", "writer","composer","producer"]
 
   df_principals = cleaner.limpiar(filtros={"tconst": list(ids_2019),
