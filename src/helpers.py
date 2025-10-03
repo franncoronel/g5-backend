@@ -36,7 +36,6 @@ class DatasetManager:
     print("Columnas:", list(df.columns))
     print("\nPrimeras filas:")
     print(df.head(n))
-    return df
 
 
 class DataCleaner(DatasetManager):
