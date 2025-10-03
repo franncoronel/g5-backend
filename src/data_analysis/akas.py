@@ -29,8 +29,23 @@ def main():
   # print(f"Filtrado akas -> {len(df_akas):,} registros")
 
   df_akas = cleaner.mantener_columnas(df_akas, columnas_a_mantener)
-  
+
   df_akas = df_akas.rename(columns={"titleId": 'tconst'})
+
+  df_akas = cleaner.limpiar_nulos(df_akas, columnas=["language"])
+
+  df_akas = df_akas.sort_values(
+    by=["tconst", "language", "isOriginalTitle"],
+    ascending=[True, True, False]
+)
+  # df_akas = df_akas.drop_duplicates(subset=["tconst", "language"], keep="first")
+
+  df_akas = df_akas.drop_duplicates(subset=["tconst", "language"], keep="first")
+
+# 🔹 Si aún hay títulos repetidos, eliminar duplicados por tconst + title
+  df_akas = df_akas.drop_duplicates(subset=["tconst", "title"], keep="first")
+  
+
   # Guardo Archivo
   cleaner.guardar_csv(df_akas, "alias_2019.csv")
 
