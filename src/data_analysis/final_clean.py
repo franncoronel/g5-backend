@@ -2,79 +2,66 @@
 Correr con:
     python -m src.data_analysis.final_clean
 """
+import os
 import pandas as pd
-from src.helpers import DataCleaner
 from src.paths import (
-    RUTA_TITULO_2019,
-    RUTA_ALIAS_2019,
-    RUTA_CRITICAS_2019,
-    RUTA_PERSONAL_2019,
-    RUTA_PRINCIPALES_2019,
-    RUTA_NOMBRE_2019
+    RUTA_TITULO_2019, RUTA_ALIAS_2019, RUTA_CRITICAS_2019,
+    RUTA_PERSONAL_2019, RUTA_PRINCIPALES_2019, RUTA_NOMBRE_2019
 )
 
-# ============================
-# 🔹 1. Inicializar cleaners para cada archivo
-# ============================
-cleaners = {
-    "Titles": DataCleaner(RUTA_TITULO_2019),
-    "Akas": DataCleaner(RUTA_ALIAS_2019),
-    "Ratings": DataCleaner(RUTA_CRITICAS_2019),
-    "Crew": DataCleaner(RUTA_PERSONAL_2019),
-    "Principals": DataCleaner(RUTA_PRINCIPALES_2019),
-    "Names": DataCleaner(RUTA_NOMBRE_2019)
-}
+def main():
+    # ========== 1. Cargar todos los CSV ==========
+    print("🔹 Cargando archivos procesados...")
+    peliculas = pd.read_csv(RUTA_TITULO_2019, dtype=str)
+    alias = pd.read_csv(RUTA_ALIAS_2019, dtype=str)
+    criticas = pd.read_csv(RUTA_CRITICAS_2019, dtype=str)
+    crew = pd.read_csv(RUTA_PERSONAL_2019, dtype=str)
+    principals = pd.read_csv(RUTA_PRINCIPALES_2019, dtype=str)
+    nombres = pd.read_csv(RUTA_NOMBRE_2019, dtype=str)
 
-# ============================
-# 🔹 2. Leer todos los DataFrames
-# ============================
-dfs = {name: cleaner.limpiar() for name, cleaner in cleaners.items()}
+    # ========== 2. Intersección de tconst ==========
+    print("🔹 Calculando intersección de tconst...")
+    inter_tconst = set(peliculas["tconst"]) \
+        & set(alias["tconst"]) \
+        & set(criticas["tconst"]) \
+        & set(crew["tconst"]) \
+        & set(principals["tconst"])
 
-# ============================
-# 🔹 3. Convertir IDs a string
-# ============================
-for df_name, df in dfs.items():
-    for col in ["tconst", "nconst"]:
-        if col in df.columns:
-            df[col] = df[col].astype(str)
+    print(f"✅ Total tconst comunes: {len(inter_tconst):,}")
 
-# ============================
-# 🔹 4. Función auxiliar para mostrar cambios
-# ============================
-def mostrar_cambios(nombre, df_original, df_filtrado):
-    total_original = len(df_original)
-    total_filtrado = len(df_filtrado)
-    eliminados = total_original - total_filtrado
-    print(f"{nombre}: {total_original} → {total_filtrado} filas (eliminadas {eliminados})")
+    # ========== 3. Intersección de nconst ==========
+    print("🔹 Calculando intersección de nconst...")
+    inter_nconst = set(principals["nconst"]) & set(nombres["nconst"])
+    print(f"✅ Total nconst comunes: {len(inter_nconst):,}")
 
-# ============================
-# 🔹 5. Intersección de tconst
-# ============================
-tconst_sets = [set(dfs[name]["tconst"]) for name in ["Titles","Akas","Ratings","Crew","Principals"]]
-tconst_validos = set.intersection(*tconst_sets)
-print(f"Títulos comunes en todas las tablas: {len(tconst_validos):,}")
+    # ========== 4. Filtrar los DataFrames ==========
+    print("🔹 Filtrando registros...")
 
-for name in ["Titles","Akas","Ratings","Crew","Principals"]:
-    df_filtrado = dfs[name][dfs[name]["tconst"].isin(tconst_validos)]
-    mostrar_cambios(name, dfs[name], df_filtrado)
-    dfs[name] = df_filtrado
+    peliculas = peliculas[peliculas["tconst"].isin(inter_tconst)]
+    alias = alias[alias["tconst"].isin(inter_tconst)]
+    criticas = criticas[criticas["tconst"].isin(inter_tconst)]
+    crew = crew[crew["tconst"].isin(inter_tconst)]
+    principals = principals[principals["tconst"].isin(inter_tconst) & principals["nconst"].isin(inter_nconst)]
+    nombres = nombres[nombres["nconst"].isin(inter_nconst)]
 
-# ============================
-# 🔹 6. Intersección de nconst
-# ============================
-nconst_sets = [set(dfs["Principals"]["nconst"]), set(dfs["Names"]["nconst"])]
-nconst_validos = set.intersection(*nconst_sets)
-print(f"Personas comunes en principals y names: {len(nconst_validos):,}")
+    # ========== 5. Sobrescribir los archivos ==========
+    print("💾 Sobrescribiendo archivos...")
 
-for name in ["Principals","Names"]:
-    df_filtrado = dfs[name][dfs[name]["nconst"].isin(nconst_validos)]
-    mostrar_cambios(name, dfs[name], df_filtrado)
-    dfs[name] = df_filtrado
+    peliculas.to_csv(RUTA_TITULO_2019, index=False, encoding="utf-8")
+    alias.to_csv(RUTA_ALIAS_2019, index=False, encoding="utf-8")
+    criticas.to_csv(RUTA_CRITICAS_2019, index=False, encoding="utf-8")
+    crew.to_csv(RUTA_PERSONAL_2019, index=False, encoding="utf-8")
+    principals.to_csv(RUTA_PRINCIPALES_2019, index=False, encoding="utf-8")
+    nombres.to_csv(RUTA_NOMBRE_2019, index=False, encoding="utf-8")
 
-# ============================
-# 🔹 7. Sobrescribir los archivos originales usando DataCleaner
-# ============================
-for name, cleaner in cleaners.items():
-    cleaner.guardar_csv(dfs[name], cleaner.ruta_archivo.split("/")[-1])  # sobrescribe con el mismo nombre
+    # ========== 6. Resumen ==========
+    print("\n✅ Limpieza cruzada completada.")
+    print(f"Películas finales: {len(peliculas):,}")
+    print(f"Alias finales: {len(alias):,}")
+    print(f"Críticas finales: {len(criticas):,}")
+    print(f"Crew finales: {len(crew):,}")
+    print(f"Principales finales: {len(principals):,}")
+    print(f"Nombres finales: {len(nombres):,}")
 
-print("✅ Limpieza global terminada y archivos originales sobrescritos.")
+if __name__ == "__main__":
+    main()
