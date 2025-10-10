@@ -5,23 +5,25 @@ Correr con:
 import subprocess
 import sys
 
-def correr_comando(commando):
-  print(f"\n>>> Ejecutando: {commando}")
-  result = subprocess.run(commando, shell=True)
+def correr_comando(comando):
+  print(f"\n>>> Ejecutando: {comando}")
+  result = subprocess.run(comando, shell=True)
   if result.returncode != 0:
-    print(f"❌ Error al ejecutar: {commando}")
+    print(f"❌ Error al ejecutar: {comando}")
     sys.exit(result.returncode)
   
-  print(f"✅ Finalizado: {commando}")
+  print(f"✅ Finalizado: {comando}")
 
 def main():
-  commandos = [ "python -m src.data_analysis.titles",
-                "python -m src.data_analysis.crew",
-                "python -m src.data_analysis.akas",
-                "python -m src.data_analysis.ratings",
-                "python -m src.data_analysis.principals",
-                "python -m src.data_analysis.name",
-                "python -m src.data_analysis.final_clean"
+  PYTHON = sys.executable  # usa el Python del entorno actual -> windows es python, linux es python3
+
+  commandos = [ f"{PYTHON} -m src.data_analysis.titles",
+                f"{PYTHON} -m src.data_analysis.crew",
+                f"{PYTHON} -m src.data_analysis.akas",
+                f"{PYTHON} -m src.data_analysis.ratings",
+                f"{PYTHON} -m src.data_analysis.principals",
+                f"{PYTHON} -m src.data_analysis.name",
+                f"{PYTHON} -m src.data_analysis.final_clean"
               ]
   
   for cmd in commandos:
