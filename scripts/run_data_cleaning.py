@@ -15,15 +15,14 @@ def correr_comando(comando):
   print(f"✅ Finalizado: {comando}")
 
 def main():
-  PYTHON = sys.executable  # usa el Python del entorno actual -> windows es python, linux es python3
 
-  commandos = [ f"{PYTHON} -m src.data_analysis.titles",
-                f"{PYTHON} -m src.data_analysis.crew",
-                f"{PYTHON} -m src.data_analysis.akas",
-                f"{PYTHON} -m src.data_analysis.ratings",
-                f"{PYTHON} -m src.data_analysis.principals",
-                f"{PYTHON} -m src.data_analysis.name",
-                f"{PYTHON} -m src.data_analysis.final_clean"
+  commandos = [ "python -m src.data_analysis.titles",
+                "python -m src.data_analysis.crew",
+                "python -m src.data_analysis.akas",
+                "python -m src.data_analysis.ratings",
+                "python -m src.data_analysis.principals",
+                "python -m src.data_analysis.name",
+                "python -m src.data_analysis.final_clean"
               ]
   
   for cmd in commandos:
