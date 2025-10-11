@@ -71,6 +71,11 @@ def main():
   columnas_a_eliminar=["isAdult"]  #, "endYear"
   df_peliculas_filtrado = cleaner.eliminar_columnas(df_peliculas_filtrado,columnas_a_eliminar)
 
+  # # Convertir columna 'genres' de string a lista de strings
+  df_peliculas_filtrado['genres'] = df_peliculas_filtrado['genres'].str.split(',')
+
+
+
   cleaner.guardar_csv(df_peliculas_filtrado, "peliculas_2019.csv")
 
   # end = time.perf_counter()

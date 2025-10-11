@@ -27,6 +27,9 @@ def main():
   df_names = cleaner.limpiar(filtros={'nconst': list(nconsts_relevantes)})
   df_names = cleaner.mantener_columnas(df_names,columnas_a_mantener)
 
+  # Convertir columna 'primaryProfession' de string a lista de strings 
+  df_names['primaryProfession'] = df_names['primaryProfession'].str.split(',')
+
 
   cleaner.guardar_csv(df_names, "nombres_2019.csv")
 if __name__ == "__main__":
