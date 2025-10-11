@@ -152,3 +152,11 @@ class DataCleaner(DatasetManager):
     """Mantiene solo las columnas especificadas en el DataFrame."""
     return df[columnas]
   
+  def profesiones_como_lista(self, df_names):
+    """
+    Método para
+    """
+    
+    df_names['primaryProfession'] = df_names['primaryProfession'].str.split(',')
+    
+    return None

@@ -25,6 +25,9 @@ def main():
 
 
   df_names = cleaner.limpiar(filtros={'nconst': list(nconsts_relevantes)})
+  
+  df_names = cleaner.profesiones_como_lista(df_names)
+  
   df_names = cleaner.mantener_columnas(df_names,columnas_a_mantener)
 
 

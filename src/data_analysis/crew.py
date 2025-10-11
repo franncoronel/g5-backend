@@ -46,7 +46,7 @@ def main():
         filtrados.append(chunk[chunk["tconst"].isin(ids_2019)])
 
     if len(filtrados) == 0:
-        df_crew_2019 = pd.DataFrame(columns=["tconst", "directors", "writers"])
+        df_crew_2019 = pd.DataFrame(columns=["tconst", "directors"])
     else:
         df_crew_2019 = pd.concat(filtrados, ignore_index=True)
 
