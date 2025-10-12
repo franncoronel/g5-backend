@@ -30,6 +30,9 @@ def main():
 
   df_names = cleaner.columna_como_lista(df_names,'primaryProfession')
 
+  df_names['primaryProfession'] = df_names['primaryProfession'].apply(
+                                  lambda lista: ['actor' if p.lower() == 'actress' else p for p in lista])
+  
   cleaner.guardar_csv(df_names, "nombres_2019.csv")
 if __name__ == "__main__":
   main()
