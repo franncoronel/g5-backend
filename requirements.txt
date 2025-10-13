@@ -3,6 +3,7 @@
 numpy
 pandas
 scikit-learn
+SQLAlchemy
 
 # Jupyter y kernel
 jupyter
