@@ -19,7 +19,7 @@ def main():
 
   cleaner = DataCleaner(RUTA_NOMBRE , DIR_DATA_PROCESADA)
 
-  columnas_a_mantener = ['nconst', 'primaryName'] #, 'birthYear' #primaryprofession
+  columnas_a_mantener = ['nconst', 'primaryName'] #, 'birthYear'
 
   nconsts_relevantes = set(df_principals["nconst"].astype(str))
 
