@@ -94,7 +94,7 @@ def crear_tablas() -> None:
     with Session(motor) as session: 
         session.add(persona_nueva)
         session.commit()
-        print(session.query(Persona).all())
+        print(session.scalars(select(Persona).all()))
 
 if __name__ == "__main__":
     crear_tablas()
