@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from datetime import date
 from enum import Enum
 from typing import List
-from sqlalchemy import ForeignKey, ARRAY, String
+from sqlalchemy import ForeignKey, select
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
