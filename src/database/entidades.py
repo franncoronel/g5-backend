@@ -77,6 +77,11 @@ class Actor_Titulo(Base):
     id_actor: Mapped[str] = mapped_column(ForeignKey("persona.id"), primary_key=True)
     nombre_personaje: Mapped[str]
     
+class Profesion(Base):
+    __tablename__ = "profesion"
+    
+    id: Mapped[str] = mapped_column(primary_key=True)
+    
 def crear_tablas() -> None:
     Base.metadata.create_all(motor) # Con esta línea podemos crear TODAS las tablas que hereden de Base
     
