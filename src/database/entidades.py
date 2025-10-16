@@ -64,11 +64,13 @@ class Persona(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     nombre: Mapped[str]
     
-class Personal_Titulo(Base): # También podría ser Director_Titulo, depende de las profesiones que conservemos
-    __tablename__ = "personal_titulo"
+class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de las profesiones que conservemos
+    __tablename__ = "profesion_titulo"
     
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
     id_persona: Mapped[str] = mapped_column(ForeignKey("persona.id"), primary_key=True)
+    profesion: Mapped[str] = mapped_column(ForeignKey("profesion.id"))
+    
     
 class Actor_Titulo(Base):
     __tablename__ = "actor_titulo"
