@@ -106,11 +106,18 @@ def crear_tablas() -> None:
 
     with Session(motor) as session:
         # Crear registros base
-        persona = Persona(nombre="John Cassavettes")
-        profesion = Profesion(id="director")
-        genero = Genero(id="drama", nombre="Drama")
+        # PERSONAS
+        john = Persona(nombre="John Cassavettes")
+        gena = Persona(nombre="Gena Rowlands")
+        martin = Persona(nombre="Martin Scorsese")
 
-        titulo = Titulo(
+        # PROFESIONES
+        actor = Profesion(id="actor")
+        director = Profesion(id="director")
+        genero_drama = Genero(id="drama", nombre="Drama")
+
+        # TITULOS
+        film1 = Titulo(
             id="tt001",
             tipo=TipoTitulo.PELICULA,
             titulo="A Woman Under the Influence",
@@ -119,55 +126,54 @@ def crear_tablas() -> None:
             fecha_estreno=date(1974, 10, 18)
         )
 
+        film2 = Titulo(
+            id="tt002",
+            tipo=TipoTitulo.PELICULA,
+            titulo="Mean Streets",
+            duracion=112,
+            sinopsis="A small-time hood struggles to succeed in Little Italy.",
+            fecha_estreno=date(1973, 10, 2)
+        )
+
         # Agregamos a la sesión los registros base
-        session.add_all([persona, profesion, genero, titulo])
+        session.add_all([john, gena, martin, actor, director, genero_drama, film1, film2])
         session.flush()
 
         # Crear registros relacionados
-        puntaje = Puntaje(
-            id="p001",
-            id_titulo=titulo.id,
-            promedio=8.2,
-            cantidad_votos=54000
-        )
 
-        actor_titulo = Actor_Titulo(
-            id_titulo=titulo.id,
-            id_actor=persona.id,
-            nombre_personaje="Nick Longhetti"
-        )
+        # PUNTAJES
+        p1 = Puntaje(id="p001", id_titulo=film1.id, promedio=8.2, cantidad_votos=54000)
+        p2 = Puntaje(id="p002", id_titulo=film2.id, promedio=7.3, cantidad_votos=60000)
 
-        profesion_titulo = Profesion_Titulo(
-            id_titulo=titulo.id,
-            id_persona=persona.id,
-            id_profesion=profesion.id
-        )
+        # PROFESION_TITULO (actores/directores)
+        rel1 = Profesion_Titulo(id_titulo=film1.id, id_persona=john.id, id_profesion=director.id)
+        rel2 = Profesion_Titulo(id_titulo=film1.id, id_persona=gena.id, id_profesion=actor.id, nombre_personaje="Mabel Longhetti")
+        rel3 = Profesion_Titulo(id_titulo=film2.id, id_persona=martin.id, id_profesion=director.id)
 
-        titulo_genero = Titulo_Genero(
-            id_titulo=titulo.id,
-            id_genero=genero.id
-        )
+        # GENEROS
+        tg1 = Titulo_Genero(id_titulo=film1.id, id_genero=genero_drama.id)
+        tg2 = Titulo_Genero(id_titulo=film2.id, id_genero=genero_drama.id)
 
-        session.add_all([
-            puntaje, actor_titulo, profesion_titulo, titulo_genero
-        ])
+        session.add_all([p1, p2, rel1, rel2, rel3, tg1, tg2])
 
         session.commit()
 
         # Consultas de prueba
-        print("\n--- PERSONAS ---")
-        print(session.scalars(select(Persona)).all())
+        # Todos los actores/directores por película
+        result = session.execute(
+            select(
+                Titulo.titulo,
+                Persona.nombre,
+                Profesion.id,
+                Profesion_Titulo.nombre_personaje
+            )
+            .join(Profesion_Titulo, Titulo.id == Profesion_Titulo.id_titulo)
+            .join(Persona, Persona.id == Profesion_Titulo.id_persona)
+            .join(Profesion, Profesion.id == Profesion_Titulo.id_profesion)
+        )
 
-        print("\n--- TITULOS ---")
-        print(session.scalars(select(Titulo)).all())
-
-        print("\n--- PUNTAJES ---")
-        print(session.scalars(select(Puntaje)).all())
-
-        print("\n--- RELACIONES ---")
-        print(session.execute(select(Actor_Titulo)).all())
-        print(session.execute(select(Profesion_Titulo)).all())
-        print(session.execute(select(Titulo_Genero)).all())
+        for row in result:
+            print(row)
 
 if __name__ == "__main__":
     crear_tablas()
