@@ -95,6 +95,7 @@ class Actor_Titulo(Base):
 
     def __repr__(self):
         return f"Actor_Titulo(id_titulo={self.id_titulo}, id_actor={self.id_actor}, nombre_personaje={self.nombre_personaje!r})"
+    
 
 class Profesion(Base):
     __tablename__ = "profesion"
