@@ -152,3 +152,14 @@ class DataCleaner(DatasetManager):
     """Mantiene solo las columnas especificadas en el DataFrame."""
     return df[columnas]
   
+  def columna_como_lista(self, df,columna):
+    """
+    Método para convertir una columna de strings separadas por comas en listas
+    """
+    df = df.copy()
+    if columna in df.columns:
+      df[columna] = df[columna].astype(str).str.split(',')
+    else:
+      print(f"Error: la columna '{columna}' no existe en el DataFrame.")
+    
+    return df
