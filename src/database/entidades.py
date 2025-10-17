@@ -1,6 +1,7 @@
 """
 * Ejecutar con: python3 -m src.database.entidades
 """
+import os
 import uuid
 from sqlalchemy import String, create_engine
 from datetime import date
@@ -15,7 +16,12 @@ from sqlalchemy.orm import (
     Session
 )
 
-motor = create_engine("sqlite+pysqlite:///:memory:", echo=True) # El motor de la base de datos se define programáticamente, en este caso es una instancia de mysqlite en memoria
+# 🔥 Eliminar archivo SQLite anterior si existe
+DB_PATH = "data/recomendador.sqlite"
+if os.path.exists(DB_PATH):
+    os.remove(DB_PATH)
+
+motor = create_engine(f"sqlite+pysqlite:///{DB_PATH}", echo=True)
 class Base(DeclarativeBase): # Todas las tablas definidas como clases heredan de la clase Base
     pass
 
