@@ -23,14 +23,14 @@ class TipoTitulo(Enum):
 
 class Titulo(Base):
     __tablename__ = "titulo" # Para todas las tablas se define un nombre de tabla al cual referenciamos al, por ejemplo, definir claves foráneas
-    
+
     id: Mapped[str] = mapped_column(primary_key=True) # El tipo Mapped[tipo] asocia un tipo de datos de Python con su análogo en el motor de base de datos, aunque no siempre se logra hacer un mapeo directo
     tipo: Mapped[TipoTitulo]
     titulo: Mapped[str]
     duracion: Mapped[int]
     sinopsis: Mapped[str]
     fecha_estreno: Mapped[date]
-    
+
     puntajes: Mapped[List["Puntaje"]] = relationship( # Con relationship definimos la relación entre dos tablas, como es el caso de esta relación uno a muchos
         back_populates="pelicula",
         cascade="all,delete-orphan"
@@ -66,7 +66,7 @@ class Persona(Base):
     
 class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de las profesiones que conservemos
     __tablename__ = "profesion_titulo"
-    
+
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
     id_persona: Mapped[str] = mapped_column(ForeignKey("persona.id"), primary_key=True)
     profesion: Mapped[str] = mapped_column(ForeignKey("profesion.id"))
@@ -74,14 +74,14 @@ class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de
     
 class Actor_Titulo(Base):
     __tablename__ = "actor_titulo"
-    
+
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
     id_actor: Mapped[str] = mapped_column(ForeignKey("persona.id"), primary_key=True)
     nombre_personaje: Mapped[str]
     
 class Profesion(Base):
     __tablename__ = "profesion"
-    
+
     id: Mapped[str] = mapped_column(primary_key=True)
     
 def crear_tablas() -> None:
