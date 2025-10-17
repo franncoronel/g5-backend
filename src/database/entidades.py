@@ -35,18 +35,25 @@ class Titulo(Base):
         back_populates="pelicula",
         cascade="all,delete-orphan"
         )
+    def __repr__(self):
+        return f"Titulo(id={self.id}, tipo={self.tipo}, titulo={self.titulo!r}, duracion={self.duracion}, fecha_estreno={self.fecha_estreno})"
 
 class Genero(Base):
     __tablename__ = "genero"
     
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre: Mapped[str]
+    def __repr__(self):
+        return f"Genero(id={self.id}, nombre={self.nombre!r})"
 
 class Titulo_Genero(Base):
     __tablename__ = "titulo_genero"
     
     id_titulo: Mapped[int] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
     id_genero: Mapped[int] = mapped_column(ForeignKey("genero.id"), primary_key=True)
+
+    def __repr__(self):
+        return f"Titulo_Genero(id_titulo={self.id_titulo}, id_genero={self.id_genero})"
 
 class Puntaje(Base):
     __tablename__ = "puntaje"
@@ -58,32 +65,45 @@ class Puntaje(Base):
     
     pelicula: Mapped["Titulo"] = relationship(back_populates="puntajes")
     
+    def __repr__(self):
+        return f"Puntaje(id={self.id}, id_titulo={self.id_titulo}, promedio={self.promedio}, cantidad_votos={self.cantidad_votos})"
 class Persona(Base):
     __tablename__ = "persona"
     
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     nombre: Mapped[str]
-    
+
+    def __repr__(self):
+        return f"Persona(id={self.id}, nombre={self.nombre!r})"
+
 class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de las profesiones que conservemos
     __tablename__ = "profesion_titulo"
 
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
     id_persona: Mapped[str] = mapped_column(ForeignKey("persona.id"), primary_key=True)
     profesion: Mapped[str] = mapped_column(ForeignKey("profesion.id"))
-    
-    
+
+    def __repr__(self):
+        return f"Profesion_Titulo(id_titulo={self.id_titulo}, id_persona={self.id_persona}, id_profesion={self.id_profesion})"
+
 class Actor_Titulo(Base):
     __tablename__ = "actor_titulo"
 
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
     id_actor: Mapped[str] = mapped_column(ForeignKey("persona.id"), primary_key=True)
     nombre_personaje: Mapped[str]
-    
+
+    def __repr__(self):
+        return f"Actor_Titulo(id_titulo={self.id_titulo}, id_actor={self.id_actor}, nombre_personaje={self.nombre_personaje!r})"
+
 class Profesion(Base):
     __tablename__ = "profesion"
 
     id: Mapped[str] = mapped_column(primary_key=True)
-    
+
+    def __repr__(self):
+        return f"Profesion(id={self.id})"
+
 def crear_tablas() -> None:
     Base.metadata.create_all(motor) # Con esta línea podemos crear TODAS las tablas que hereden de Base
     
