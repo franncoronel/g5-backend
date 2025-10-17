@@ -105,17 +105,76 @@ class Profesion(Base):
 
 def crear_tablas() -> None:
     Base.metadata.create_all(motor) # Con esta línea podemos crear TODAS las tablas que hereden de Base
-    
-    persona_nueva = Persona(nombre="John Cassavettes") # Agrego un registro para probar el insert
-    
+
     """
         La Session establece una "conversación" con la base de datos. Dentro de una sesión podemos realizar distintas consultas y confirmarlas con session.commit().
         Es importante usar la sentencia with para que esta conexión con la base de datos se caiga al terminar de realizar operaciones
     """
-    with Session(motor) as session: 
-        session.add(persona_nueva)
+
+    with Session(motor) as session:
+        # Crear registros base
+        persona = Persona(nombre="John Cassavettes")
+        profesion = Profesion(id="director")
+        genero = Genero(id="drama", nombre="Drama")
+
+        titulo = Titulo(
+            id="tt001",
+            tipo=TipoTitulo.PELICULA,
+            titulo="A Woman Under the Influence",
+            duracion=155,
+            sinopsis="A woman struggles with mental illness and family life.",
+            fecha_estreno=date(1974, 10, 18)
+        )
+
+        # Agregamos a la sesión los registros base
+        session.add_all([persona, profesion, genero, titulo])
+        session.flush()
+
+        # Crear registros relacionados
+        puntaje = Puntaje(
+            id="p001",
+            id_titulo=titulo.id,
+            promedio=8.2,
+            cantidad_votos=54000
+        )
+
+        actor_titulo = Actor_Titulo(
+            id_titulo=titulo.id,
+            id_actor=persona.id,
+            nombre_personaje="Nick Longhetti"
+        )
+
+        profesion_titulo = Profesion_Titulo(
+            id_titulo=titulo.id,
+            id_persona=persona.id,
+            id_profesion=profesion.id
+        )
+
+        titulo_genero = Titulo_Genero(
+            id_titulo=titulo.id,
+            id_genero=genero.id
+        )
+
+        session.add_all([
+            puntaje, actor_titulo, profesion_titulo, titulo_genero
+        ])
+
         session.commit()
-        print(session.scalars(select(Persona).all()))
+
+        # Consultas de prueba
+        print("\n--- PERSONAS ---")
+        print(session.scalars(select(Persona)).all())
+
+        print("\n--- TITULOS ---")
+        print(session.scalars(select(Titulo)).all())
+
+        print("\n--- PUNTAJES ---")
+        print(session.scalars(select(Puntaje)).all())
+
+        print("\n--- RELACIONES ---")
+        print(session.execute(select(Actor_Titulo)).all())
+        print(session.execute(select(Profesion_Titulo)).all())
+        print(session.execute(select(Titulo_Genero)).all())
 
 if __name__ == "__main__":
     crear_tablas()
