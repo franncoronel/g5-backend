@@ -82,6 +82,7 @@ class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
     id_persona: Mapped[str] = mapped_column(ForeignKey("persona.id"), primary_key=True)
     id_profesion: Mapped[str] = mapped_column(ForeignKey("profesion.id"))
+    nombre_personaje: Mapped[str | None] = mapped_column(nullable=True)
 
     def __repr__(self):
         return f"Profesion_Titulo(id_titulo={self.id_titulo}, id_persona={self.id_persona}, id_profesion={self.id_profesion})"
