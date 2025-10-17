@@ -16,22 +16,22 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 * Python
 
 ---
-## Estructura  
-`G5-BACKEND`/  
-│  
-├─ `data/`                         — Archivos de datos y datasets  
-│     └─ `processed/`                — datos limpios/listos para análisis  
-│  
-├─ `scripts`                        - Scripts para ejecutar procesos  
-│     └─ `run_data_cleaning.py`     - Ejecuta en orden los módulos de análisis  
-├─ `src/`  
-│   └─ `data_analysis`  
-│  
-├─ `notebooks/`                    — Jupyter Notebooks (exploración, pruebas)  
-│  
-├─ `README.md`  
-├─ `requirements.txt`              — Dependencias de Python  
-└─ `.gitignore`                    — exclusiones  
+## Estructura
+`G5-BACKEND`/
+│
+├─ `data/`                         — Archivos de datos y datasets
+│     └─ `processed/`                — datos limpios/listos para análisis
+│
+├─ `scripts`                        - Scripts para ejecutar procesos
+│     └─ `run_data_cleaning.py`     - Ejecuta en orden los módulos de análisis
+├─ `src/`
+│   └─ `data_analysis`
+│
+├─ `notebooks/`                    — Jupyter Notebooks (exploración, pruebas)
+│
+├─ `README.md`
+├─ `requirements.txt`              — Dependencias de Python
+└─ `.gitignore`                    — exclusiones
 
 ---
 ## Setup
@@ -44,42 +44,42 @@ Descargar datasets desde [DRIVE](https://drive.google.com/drive/u/1/folders/1WTl
 python3 -m venv .venv
 ```
 2. Activar el entorno virtual:
-```
+```bash
 source .venv/bin/activate
 ```
 3. Una vez activado el entorno virtual, instalar las dependencias:
-```
+```bash
 pip install -r requirements.txt
 ```
 ---
 ### Windows
 1. Creo El entorno
-```bash
+```powershell
 python -m venv .venv
 # Si no funciona
 py -m venv .venv
 ```
 
 2. Activo el entorno
-```bash
+```powershell
 .\.venv\Scripts\Activate
-```  
-Si te tira error de ejecución de scripts, ejecutá primero  
-```bash
+```
+Si te tira error de ejecución de scripts, ejecutá primero
+```powershell
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-```  
+```
 Luego...
-```bash
+```powershell
 .\.venv\Scripts\Activate
 ```
 
 3. Actualizo el pip
-```bash
+```powershell
 python -m pip install --upgrade pip
-```  
+```
 
 4. Instalo los requerimientos
-```bash
+```powershell
 pip install -r requirements.txt
 ```
 
