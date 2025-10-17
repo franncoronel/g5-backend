@@ -29,6 +29,9 @@ def main():
 
   df_principals = cleaner.mantener_columnas(df_principals, columnas_a_mantener)
 
+  df_principals['category'] = df_principals['category'].apply(
+                                  lambda lista: ['actor' if p.lower() == 'actress' else p for p in lista])
+
   cleaner.guardar_csv(df_principals, "principales_2019.csv")
 
 if __name__ == "__main__":
