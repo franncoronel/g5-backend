@@ -40,37 +40,36 @@ class Titulo(Base):
 
 class Genero(Base):
     __tablename__ = "genero"
-    
-    id: Mapped[int] = mapped_column(primary_key=True)
+
+    id: Mapped[str] = mapped_column(primary_key=True)
     nombre: Mapped[str]
     def __repr__(self):
         return f"Genero(id={self.id}, nombre={self.nombre!r})"
 
 class Titulo_Genero(Base):
     __tablename__ = "titulo_genero"
-    
-    id_titulo: Mapped[int] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
-    id_genero: Mapped[int] = mapped_column(ForeignKey("genero.id"), primary_key=True)
+
+    id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
+    id_genero: Mapped[str] = mapped_column(ForeignKey("genero.id"), primary_key=True)
 
     def __repr__(self):
         return f"Titulo_Genero(id_titulo={self.id_titulo}, id_genero={self.id_genero})"
 
 class Puntaje(Base):
     __tablename__ = "puntaje"
-    
-    id: Mapped[int] = mapped_column(primary_key=True)
+
+    id: Mapped[str] = mapped_column(primary_key=True)
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id")) # Al instanciar ForeignKey se pasa el nombre de la tabla, no de la clase, para relacionar las tablas.
     promedio: Mapped[float]
     cantidad_votos: Mapped[int]
-    
     pelicula: Mapped["Titulo"] = relationship(back_populates="puntajes")
-    
+
     def __repr__(self):
         return f"Puntaje(id={self.id}, id_titulo={self.id_titulo}, promedio={self.promedio}, cantidad_votos={self.cantidad_votos})"
 class Persona(Base):
     __tablename__ = "persona"
-    
-    id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     nombre: Mapped[str]
 
     def __repr__(self):
@@ -81,7 +80,7 @@ class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de
 
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
     id_persona: Mapped[str] = mapped_column(ForeignKey("persona.id"), primary_key=True)
-    profesion: Mapped[str] = mapped_column(ForeignKey("profesion.id"))
+    id_profesion: Mapped[str] = mapped_column(ForeignKey("profesion.id"))
 
     def __repr__(self):
         return f"Profesion_Titulo(id_titulo={self.id_titulo}, id_persona={self.id_persona}, id_profesion={self.id_profesion})"
