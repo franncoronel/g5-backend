@@ -1,7 +1,8 @@
 """
 * Ejecutar con: python3 -m src.database.entidades
 """
-from sqlalchemy import create_engine
+import uuid
+from sqlalchemy import String, create_engine
 from datetime import date
 from enum import Enum
 from typing import List
