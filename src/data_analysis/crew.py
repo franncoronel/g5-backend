@@ -52,7 +52,10 @@ def main():
 
     # Opcional: reemplazar '\N' por NaN para limpiar
     df_crew_2019 = df_crew_2019.replace({"\\N": pd.NA})
-
+    
+    df_crew_2019 = df_crew_2019.assign(
+    directors=df_crew_2019['directors'].str.split(',')).explode('directors')
+    
     # 3) Guardar resultado junto al resto de procesados
     os.makedirs(DIR_DATA_PROCESADA, exist_ok=True)
     salida = os.path.join(DIR_DATA_PROCESADA, "crew_2019.csv")

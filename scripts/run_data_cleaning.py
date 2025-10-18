@@ -17,7 +17,6 @@ def correr_comando(comando):
 def main():
 
   commandos = [ "python -m src.data_analysis.titles",
-                "python -m src.data_analysis.crew",
                 "python -m src.data_analysis.akas",
                 "python -m src.data_analysis.ratings",
                 "python -m src.data_analysis.principals",
