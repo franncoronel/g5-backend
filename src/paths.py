@@ -17,8 +17,13 @@ RUTA_ALIAS= os.path.join(DIR_DATA,"title.akas.tsv")
 #RUTA_PERSONAL = os.path.join(DIR_DATA, "title.crew.tsv")
 
 # Ruta de archivos filtrados
-RUTA_TITULO_2019 = os.path.join(DIR_DATA_PROCESADA,"peliculas_2019.csv")
 RUTA_ALIAS_2019 = os.path.join(DIR_DATA_PROCESADA,"alias_2019.csv")
 RUTA_CRITICAS_2019 = os.path.join(DIR_DATA_PROCESADA,"criticas_2019.csv")
-RUTA_PRINCIPALES_2019 =os.path.join(DIR_DATA_PROCESADA,"principales_2019.csv")
+RUTA_GENERO_2019 = os.path.join(DIR_DATA_PROCESADA, "generos_2019.csv")
 RUTA_NOMBRE_2019 = os.path.join(DIR_DATA_PROCESADA, "nombres_2019.csv")
+RUTA_TITULO_2019 = os.path.join(DIR_DATA_PROCESADA,"peliculas_2019.csv")
+RUTA_PRINCIPALES_2019 = os.path.join(DIR_DATA_PROCESADA,"principales_2019.csv")
+RUTA_TITULO_GENERO = os.path.join(DIR_DATA_PROCESADA, "rel_titulo_generos.csv")
+
+# Base de datos
+RUTA_DB = os.path.join(DIR_DATA, "recomendador.sqlite")
