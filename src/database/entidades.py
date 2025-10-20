@@ -45,7 +45,7 @@ class Titulo(Base):
 class Genero(Base):
     __tablename__ = "genero"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     nombre: Mapped[str]
     def __repr__(self):
         return f"Genero(id={self.id}, nombre={self.nombre!r})"
