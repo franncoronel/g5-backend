@@ -8,6 +8,7 @@ from datetime import date
 from enum import Enum
 from typing import List
 from sqlalchemy import ForeignKey, select
+from src.paths import RUTA_DB
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -16,12 +17,8 @@ from sqlalchemy.orm import (
     Session
 )
 
-# 🔥 Eliminar archivo SQLite anterior si existe
-DB_PATH = "data/recomendador.sqlite"
-if os.path.exists(DB_PATH):
-    os.remove(DB_PATH)
 
-motor = create_engine(f"sqlite+pysqlite:///{DB_PATH}", echo=True)
+motor = create_engine(f"sqlite+pysqlite:///{RUTA_DB}", echo=True)
 class Base(DeclarativeBase): # Todas las tablas definidas como clases heredan de la clase Base
     pass
 
