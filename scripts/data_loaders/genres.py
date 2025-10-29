@@ -1,26 +1,20 @@
 # Ejecutar con "python -m scripts.data_loaders.genres"
 
-import pandas as pd
 from src.database.entidades import motor
+from src.helpers import DBLoader
 from src.paths import RUTA_GENERO_2019
-
-# 2. Carga tu CSV limpio a un DataFrame de Pandas
-df_generos = pd.read_csv(RUTA_GENERO_2019)
 
 # ¡IMPORTANTE!
 # Asegúrate de que los nombres de las columnas en tu CSV coincidan
 # EXACTAMENTE con los nombres de las columnas en tu tabla de la base de datos.
-# Si no coinciden, puedes renombrarlos en Pandas:
-# df = df.rename(columns={'titulo_csv': 'nombre_columna_db'})
+# Si no coinciden,  hay renombrarlos, arma un diccionario
+#{'titulo_csv': 'nombre_columna_db'}
 
-df_generos = df_generos.rename(columns={'id_genre': 'id','typeGenre': 'nombre'})
+loader = DBLoader(motor)    # El motor de SQLAlchemy
 
-# 3. Carga el DataFrame a la tabla
-print("Cargando datos a la tabla 'genero'...")
-df_generos.to_sql(
-    'genero',          # Nombre de la tabla en la BD
-    con=motor,        # El motor de SQLAlchemy
-    if_exists='replace', # 'append' = añade los datos, 'replace' = borra y crea, 'fail' = falla si existe
-    index=False        # No guardes el índice de Pandas como una columna
+loader.cargar_csv(
+    ruta_csv=RUTA_GENERO_2019,
+    tabla="genero", # Nombre de la tabla en la BD
+    renombrar={"id_genre": "id", "typeGenre": "nombre"},
+    modo="append"  # 'append' = añade los datos, 'replace' = borra y crea, 'fail' = falla si existe
 )
-print("¡Carga completada!")
