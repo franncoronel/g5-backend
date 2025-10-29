@@ -23,7 +23,7 @@ RUTA_GENERO_2019 = os.path.join(DIR_DATA_PROCESADA, "generos_2019.csv")
 RUTA_NOMBRE_2019 = os.path.join(DIR_DATA_PROCESADA, "nombres_2019.csv")
 RUTA_TITULO_2019 = os.path.join(DIR_DATA_PROCESADA,"peliculas_2019.csv")
 RUTA_PRINCIPALES_2019 = os.path.join(DIR_DATA_PROCESADA,"principales_2019.csv")
-RUTA_TITULO_GENERO = os.path.join(DIR_DATA_PROCESADA, "rel_titulo_generos.csv")
+RUTA_TITULO_GENERO = os.path.join(DIR_DATA_PROCESADA, "rel_titulos_generos.csv")
 
 # Base de datos
 RUTA_DB = os.path.join(DIR_DATA, "recomendador.sqlite")
