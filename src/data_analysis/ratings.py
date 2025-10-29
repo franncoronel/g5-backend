@@ -5,7 +5,7 @@ Correr con:
 import os
 import sys
 import pandas as pd
-
+# import uuid
 
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../..")))
 
@@ -24,6 +24,10 @@ def main():
 
   df_ratings = cleaner.mantener_columnas(df_ratings, columnas_ratings)
 
+  # df_ratings['id'] = [str(uuid.uuid4()) for _ in range(len(df_ratings))]
+  df_ratings['id'] = range(1, len(df_ratings) + 1) 
+  df_ratings = df_ratings[['id', 'tconst', 'averageRating', 'numVotes']]
+  
   cleaner.guardar_csv(df_ratings, "criticas_2019.csv")
 
 if __name__ == "__main__":
