@@ -32,7 +32,7 @@ class Titulo(Base):
     tipo: Mapped[TipoTitulo]
     titulo: Mapped[str]
     duracion: Mapped[int]
-    sinopsis: Mapped[str]
+    sinopsis: Mapped[str | None] = mapped_column(nullable=True, default="Sinopsis no disponible")
     fecha_estreno: Mapped[date]
 
     puntajes: Mapped[List["Puntaje"]] = relationship( # Con relationship definimos la relación entre dos tablas, como es el caso de esta relación uno a muchos
