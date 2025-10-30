@@ -13,5 +13,6 @@ loader.cargar_csv(
   tabla="profesion_titulo", # Nombre de la tabla en la BD
   renombrar={"tconst": "id_titulo","nconst": "id_persona",
              "characters": "nombre_personaje"},
-  modo="append"  # 'append' = añade los datos, 'replace' = borra y crea, 'fail' = falla si existe
+  modo="append",  # 'append' = añade los datos, 'replace' = borra y crea, 'fail' = falla si existe
+  auto_id=True
 )

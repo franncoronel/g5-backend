@@ -172,7 +172,7 @@ class DBLoader:
     self.motor = motor
 
   def cargar_csv(self,ruta_csv, tabla: str, renombrar: dict = None, eliminar: list = None,
-                 modo: str = 'append', index: bool = False):
+                 modo: str = 'append', index: bool = False,auto_id: bool = False,):
     """Carga un archivo CSV en una tabla de base de datos.
       Parámetros:
         ruta_csv : Ruta del archivo CSV.
@@ -200,8 +200,9 @@ class DBLoader:
     if renombrar:
       df = df.rename(columns=renombrar)
 
-    if "id" not in df.columns:
-      df["id"] = [str(uuid.uuid4()) for _ in range(len(df))]
+    # Genero la columna 'id' si se solicita
+    if auto_id and "id" not in df.columns:
+        df["id"] = [str(uuid.uuid4()) for _ in range(len(df))]
 
     # Comprueba si la tabla existe y modo replace
     inspector = inspect(self.motor)
@@ -209,7 +210,7 @@ class DBLoader:
       confirm = input(f"⚠ La tabla '{tabla}' ya existe. Reemplazarla? (s/n): ").strip().lower()
       if confirm != "s":
         print("Carga cancelada por el usuario.")
-        #return df # Devuelve el DataFrame final por si es necesario inspeccionarlo
+        return #df # Devuelve el DataFrame final por si es necesario inspeccionarlo
 
     print(f"\nCargando datos a la tabla '{tabla}' ({len(df):,} registros)...")
     df.to_sql(tabla, 
