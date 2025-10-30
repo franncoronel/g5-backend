@@ -17,5 +17,5 @@ loader.cargar_csv(
     ruta_csv=RUTA_NOMBRE_2019,
     tabla='persona', # Nombre de la tabla en la BD
     renombrar={'nconst': 'id','primaryName': 'nombre'},
-    modo='replace'  # 'append' = añade los datos, 'replace' = borra y crea, 'fail' = falla si existe
+    modo='append'  # 'append' = añade los datos, 'replace' = borra y crea, 'fail' = falla si existe
 )
