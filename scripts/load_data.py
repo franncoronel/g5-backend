@@ -22,7 +22,9 @@ def main():
                'python -m scripts.data_loaders.names',
                'python -m scripts.data_loaders.genres',
                'python -m scripts.data_loaders.title_genre',
-               'python -m scripts.data_loaders.ratings'
+               'python -m scripts.data_loaders.ratings',
+               'python -m scripts.data_loaders.professions',
+               'python -m scripts.data_loaders.title_professions'
                ]
   
   for cmd in comandos:
