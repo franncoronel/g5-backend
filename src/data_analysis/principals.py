@@ -29,9 +29,27 @@ def main():
 
   df_principals = cleaner.mantener_columnas(df_principals, columnas_a_mantener)
 
+  # Unifico 'actor' y 'actress'
   df_principals['category'] = df_principals['category'].replace('actress', 'actor')
 
-  cleaner.guardar_csv(df_principals, "principales_2019.csv")
+  # Creo Tabla de profesiones únicas
+  profesiones_unicas = sorted(df_principals['category'].dropna().unique())
+  df_profesiones = pd.DataFrame({"id_profesion": range(1, len(profesiones_unicas) + 1),
+                                 "typeProfession": profesiones_unicas})
+
+  # Merge para obtener id_profesion directamente
+  df_rel = df_principals.merge(df_profesiones,
+                               left_on="category",
+                               right_on="typeProfession",
+                               how="left")
+
+  # Eliminar columnas redundantes
+  df_rel = cleaner.eliminar_columnas(df_rel, ["category", "typeProfession"])
+
+  # Guardar CSVs resultantes
+  cleaner.guardar_csv(df_profesiones, "profesiones.csv")
+  cleaner.guardar_csv(df_rel, "principales_profesiones_2019.csv")
+
 
 if __name__ == "__main__":
   main()
