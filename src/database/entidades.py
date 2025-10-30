@@ -105,6 +105,18 @@ class Profesion(Base):
     def __repr__(self):
         return f"Profesion(id={self.id}, nombre={self.nombre!r})"
 
+class Titulo_Alternativo(Base):
+    __tablename__ = "titulo_alternativo"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"))
+    titulo: Mapped[str] = mapped_column(nullable=False)
+    es_original: Mapped[bool] = mapped_column(nullable=False)
+    region: Mapped[str | None] = mapped_column(nullable=True)
+    idioma: Mapped[str | None] = mapped_column(nullable=True)
+
+    def __repr__(self):
+        return (f"Titulo_Alternativo(id_titulo={self.id_titulo}, titulo={self.titulo!r}, es_original={self.es_original}, region={self.region!r}, idioma={self.idioma!r})")
 
 def crear_tablas() -> None:
     Base.metadata.create_all(motor) # Con esta línea podemos crear TODAS las tablas que hereden de Base
