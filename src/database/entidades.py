@@ -33,12 +33,14 @@ class Titulo(Base):
     titulo: Mapped[str]
     duracion: Mapped[int]
     sinopsis: Mapped[str | None] = mapped_column(nullable=True, default="Sinopsis no disponible")
+    poster: Mapped[str | None] = mapped_column(nullable=True, default="Imagen no disponible")
     fecha_estreno: Mapped[date]
 
     puntajes: Mapped[List["Puntaje"]] = relationship( # Con relationship definimos la relación entre dos tablas, como es el caso de esta relación uno a muchos
         back_populates="pelicula",
         cascade="all,delete-orphan"
         )
+    profesion_titulos: Mapped[List["Profesion_Titulo"]] = relationship(back_populates="titulo")
     def __repr__(self):
         return f"Titulo(id={self.id}, tipo={self.tipo}, titulo={self.titulo!r}, duracion={self.duracion}, fecha_estreno={self.fecha_estreno})"
 
@@ -66,6 +68,7 @@ class Puntaje(Base):
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id")) # Al instanciar ForeignKey se pasa el nombre de la tabla, no de la clase, para relacionar las tablas.
     promedio: Mapped[float]
     cantidad_votos: Mapped[int]
+    
     pelicula: Mapped["Titulo"] = relationship(back_populates="puntajes")
 
     def __repr__(self):
@@ -76,28 +79,32 @@ class Persona(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     nombre: Mapped[str]
 
+    profesion_titulos: Mapped[List["Profesion_Titulo"]] = relationship(back_populates="persona")
+
     def __repr__(self):
         return f"Persona(id={self.id}, nombre={self.nombre!r})"
 
 class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de las profesiones que conservemos
     __tablename__ = "profesion_titulo"
-
-    id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
-    id_persona: Mapped[str] = mapped_column(ForeignKey("persona.id"), primary_key=True)
-    id_profesion: Mapped[str] = mapped_column(ForeignKey("profesion.id"))
+    
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"))
+    id_persona: Mapped[str] = mapped_column(ForeignKey("persona.id"))
+    id_profesion: Mapped[str] = mapped_column(ForeignKey("profesion.id"), nullable=False)
     nombre_personaje: Mapped[str | None] = mapped_column(nullable=True)
 
     def __repr__(self):
         return f"Profesion_Titulo(id_titulo={self.id_titulo}, id_persona={self.id_persona}, id_profesion={self.id_profesion}, nombre_personaje={self.nombre_personaje!r})"
     
-
 class Profesion(Base):
     __tablename__ = "profesion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
-
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
+    nombre: Mapped[str]
+    
     def __repr__(self):
-        return f"Profesion(id={self.id})"
+        return f"Profesion(id={self.id}, nombre={self.nombre!r})"
+
 
 def crear_tablas() -> None:
     Base.metadata.create_all(motor) # Con esta línea podemos crear TODAS las tablas que hereden de Base
