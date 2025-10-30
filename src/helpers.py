@@ -1,3 +1,4 @@
+import uuid
 import pandas as pd
 import os
 from src.paths import DIR_DATA_PROCESADA  # carpeta de archivos procesados
@@ -198,6 +199,9 @@ class DBLoader:
 
     if renombrar:
       df = df.rename(columns=renombrar)
+
+    if "id" not in df.columns:
+      df["id"] = [str(uuid.uuid4()) for _ in range(len(df))]
 
     # Comprueba si la tabla existe y modo replace
     inspector = inspect(self.motor)
