@@ -1,6 +1,8 @@
+import uuid
 import pandas as pd
 import os
 from src.paths import DIR_DATA_PROCESADA  # carpeta de archivos procesados
+from sqlalchemy import inspect
 
 class DatasetManager:
   def __init__(self,base_path=None):
@@ -163,3 +165,59 @@ class DataCleaner(DatasetManager):
       print(f"Error: la columna '{columna}' no existe en el DataFrame.")
     
     return df
+  
+
+class DBLoader:
+  def __init__(self, motor):
+    self.motor = motor
+
+  def cargar_csv(self,ruta_csv, tabla: str, renombrar: dict = None, eliminar: list = None,
+                 modo: str = 'append', index: bool = False,auto_id: bool = False,):
+    """Carga un archivo CSV en una tabla de base de datos.
+      Parámetros:
+        ruta_csv : Ruta del archivo CSV.
+        tabla : str
+            Nombre de la tabla de destino en la base de datos.
+        renombrar : dict
+            Diccionario de mapeo de columnas {nombre_original: nuevo_nombre}.
+        eliminar : list
+            Lista de columnas a eliminar del DataFrame antes de la carga.
+        modo : {'replace', 'append', 'fail'}
+            Modo de carga. 'replace' sobrescribe la tabla, 'append' agrega registros.
+        index : bool  #! No guardes el índice de Pandas como una columna
+            Si se debe guardar el índice de Pandas como columna.
+    """
+
+    if not os.path.exists(ruta_csv):
+      raise FileNotFoundError(f"No se encontró el archivo CSV en: {ruta_csv}")
+    
+    df = pd.read_csv(ruta_csv)
+
+    # Eliminar columnas si corresponde
+    if eliminar:
+      df = df.drop(columns=eliminar, errors="ignore")
+
+    if renombrar:
+      df = df.rename(columns=renombrar)
+
+    # Genero la columna 'id' si se solicita
+    if auto_id and "id" not in df.columns:
+        df["id"] = [str(uuid.uuid4()) for _ in range(len(df))]
+
+    # Comprueba si la tabla existe y modo replace
+    inspector = inspect(self.motor)
+    if modo == "replace" and inspector.has_table(tabla):
+      confirm = input(f"⚠ La tabla '{tabla}' ya existe. Reemplazarla? (s/n): ").strip().lower()
+      if confirm != "s":
+        print("Carga cancelada por el usuario.")
+        return #df # Devuelve el DataFrame final por si es necesario inspeccionarlo
+
+    print(f"\nCargando datos a la tabla '{tabla}' ({len(df):,} registros)...")
+    df.to_sql(tabla, 
+              con=self.motor, 
+              if_exists=modo,
+              index=index)
+    
+    print(f"✅ Carga completada ({len(df):,} registros).")
+
+    #return df  # Devuelve el DataFrame final por si es necesario inspeccionarlo
