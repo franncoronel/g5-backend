@@ -16,31 +16,31 @@ from sqlalchemy.orm import (
     relationship,
     Session
 )
-
+from sqlalchemy import Enum as SqlEnum
 
 motor = create_engine(f"sqlite+pysqlite:///{RUTA_DB}", echo=True)
 class Base(DeclarativeBase): # Todas las tablas definidas como clases heredan de la clase Base
     pass
 
 class TipoTitulo(Enum):
-    PELICULA = "pelicula"
+    PELICULA =  "movie"
+    TV_MOVIE = "tvMovie"
 
 class Titulo(Base):
     __tablename__ = "titulo" # Para todas las tablas se define un nombre de tabla al cual referenciamos al, por ejemplo, definir claves foráneas
 
     id: Mapped[str] = mapped_column(primary_key=True) # El tipo Mapped[tipo] asocia un tipo de datos de Python con su análogo en el motor de base de datos, aunque no siempre se logra hacer un mapeo directo
-    tipo: Mapped[TipoTitulo]
+    tipo: Mapped[TipoTitulo] = mapped_column(SqlEnum(TipoTitulo), nullable=False)
     titulo: Mapped[str]
     duracion: Mapped[int]
     sinopsis: Mapped[str | None] = mapped_column(nullable=True, default="Sinopsis no disponible")
     poster: Mapped[str | None] = mapped_column(nullable=True, default="Imagen no disponible")
     fecha_estreno: Mapped[date]
 
-    puntajes: Mapped[List["Puntaje"]] = relationship( # Con relationship definimos la relación entre dos tablas, como es el caso de esta relación uno a muchos
-        back_populates="pelicula",
-        cascade="all,delete-orphan"
-        )
+    # Con relationship definimos la relación entre dos tablas, como es el caso de esta relación uno a muchos
+    puntajes: Mapped[List["Puntaje"]] = relationship(back_populates="pelicula",cascade="all,delete-orphan")
     profesion_titulos: Mapped[List["Profesion_Titulo"]] = relationship(back_populates="titulo")
+
     def __repr__(self):
         return f"Titulo(id={self.id}, tipo={self.tipo}, titulo={self.titulo!r}, duracion={self.duracion}, fecha_estreno={self.fecha_estreno})"
 
@@ -92,6 +92,9 @@ class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de
     id_persona: Mapped[str] = mapped_column(ForeignKey("persona.id"))
     id_profesion: Mapped[str] = mapped_column(ForeignKey("profesion.id"), nullable=False)
     nombre_personaje: Mapped[str | None] = mapped_column(nullable=True)
+
+    titulo: Mapped["Titulo"] = relationship(back_populates="profesion_titulos")
+    persona: Mapped["Persona"] = relationship(back_populates="profesion_titulos")
 
     def __repr__(self):
         return f"Profesion_Titulo(id_titulo={self.id_titulo}, id_persona={self.id_persona}, id_profesion={self.id_profesion}, nombre_personaje={self.nombre_personaje!r})"
