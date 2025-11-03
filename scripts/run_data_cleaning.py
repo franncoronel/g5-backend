@@ -18,8 +18,8 @@ def main():
 
   commandos = [ "python -m src.data_analysis.titles",
                 "python -m src.data_analysis.akas",
-                #"python -m src.data_analysis.ratings",
-                #"python -m src.data_analysis.principals",
+                "python -m src.data_analysis.ratings",
+                "python -m src.data_analysis.principals",
                 "python -m src.data_analysis.name",
                 "python -m src.data_analysis.final_clean"
               ]
