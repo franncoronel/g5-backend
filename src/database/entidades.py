@@ -40,6 +40,8 @@ class Titulo(Base):
     # Con relationship definimos la relación entre dos tablas, como es el caso de esta relación uno a muchos
     puntajes: Mapped[List["Puntaje"]] = relationship(back_populates="pelicula",cascade="all,delete-orphan")
     profesion_titulos: Mapped[List["Profesion_Titulo"]] = relationship(back_populates="titulo")
+    generos: Mapped[List["Titulo_Genero"]] = relationship( back_populates="titulo")
+    alternativos: Mapped[List["Titulo_Alternativo"]] = relationship(back_populates="titulo_rel")
 
     def __repr__(self):
         return f"Titulo(id={self.id}, tipo={self.tipo}, titulo={self.titulo!r}, duracion={self.duracion}, fecha_estreno={self.fecha_estreno})"
@@ -49,6 +51,9 @@ class Genero(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     nombre: Mapped[str]
+
+    titulos: Mapped[List["Titulo_Genero"]] = relationship(back_populates="genero")
+
     def __repr__(self):
         return f"Genero(id={self.id}, nombre={self.nombre!r})"
 
@@ -57,6 +62,9 @@ class Titulo_Genero(Base):
 
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
     id_genero: Mapped[str] = mapped_column(ForeignKey("genero.id"), primary_key=True)
+
+    titulo: Mapped["Titulo"] = relationship(back_populates="generos")
+    genero: Mapped["Genero"] = relationship(back_populates="titulos")
 
     def __repr__(self):
         return f"Titulo_Genero(id_titulo={self.id_titulo}, id_genero={self.id_genero})"
@@ -95,6 +103,7 @@ class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de
 
     titulo: Mapped["Titulo"] = relationship(back_populates="profesion_titulos")
     persona: Mapped["Persona"] = relationship(back_populates="profesion_titulos")
+    profesion: Mapped["Profesion"] = relationship(back_populates="profesion_titulos")
 
     def __repr__(self):
         return f"Profesion_Titulo(id_titulo={self.id_titulo}, id_persona={self.id_persona}, id_profesion={self.id_profesion}, nombre_personaje={self.nombre_personaje!r})"
@@ -105,6 +114,8 @@ class Profesion(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     nombre: Mapped[str]
     
+    profesion_titulos: Mapped[List["Profesion_Titulo"]] = relationship(back_populates="profesion")
+
     def __repr__(self):
         return f"Profesion(id={self.id}, nombre={self.nombre!r})"
 
@@ -117,6 +128,8 @@ class Titulo_Alternativo(Base):
     es_original: Mapped[bool] = mapped_column(nullable=False)
     region: Mapped[str | None] = mapped_column(nullable=True)
     idioma: Mapped[str | None] = mapped_column(nullable=True)
+
+    titulo_rel: Mapped["Titulo"] = relationship(back_populates="alternativos")
 
     def __repr__(self):
         return (f"Titulo_Alternativo(id_titulo={self.id_titulo}, titulo={self.titulo!r}, es_original={self.es_original}, region={self.region!r}, idioma={self.idioma!r})")
