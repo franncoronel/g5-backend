@@ -1,4 +1,4 @@
-# Ejecutar con "python -m scripts.data_loaders.title"
+# Ejecutar con "python -m src.data_loaders.title"
 
 from src.database.entidades import motor, Titulo
 from src.helpers import DBLoader

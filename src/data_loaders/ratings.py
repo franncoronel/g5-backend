@@ -1,4 +1,4 @@
-# Ejecutar con "python -m scripts.data_loaders.ratings"
+# Ejecutar con "python -m src.data_loaders.ratings"
 
 from src.helpers import DBLoader
 from src.database.entidades import motor
