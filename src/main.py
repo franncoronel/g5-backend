@@ -1,6 +1,12 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
+
+'''
+Correr con:
+          python -m uvicorn src.main:app --reload
+'''
 
 app = FastAPI()
 
@@ -13,7 +19,9 @@ app.add_middleware(
 )
 
 
-DB_PATH = "data/recomendador.sqlite"  
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  
+DB_PATH = os.path.join(BASE_DIR, "data", "recomendador.sqlite")
+
 @app.get("/generos")
 def obtener_generos():
     conn = sqlite3.connect(DB_PATH)
