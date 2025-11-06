@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
-from src.models.preferencia import Preferencia
+from src.models.preference import PreferenceDTO
 '''
 Correr con:
           python -m uvicorn src.main:app --reload
@@ -35,7 +35,7 @@ def obtener_generos():
 
 #RECIBIR PREFERENCIA DEL FRONTEND
 @app.post("/preferencias")
-def recibir_preferencias(preferencia: Preferencia):
+def recibir_preferencias(preferencia: PreferenceDTO):
     print("📩 Preferencias recibidas:")
     print(preferencia.model_dump())  # Versión en dict
     return {"mensaje": "Preferencias recibidas correctamente"}
