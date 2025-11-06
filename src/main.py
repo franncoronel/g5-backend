@@ -1,10 +1,11 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 from src.models.preferencia import Preferencia
 '''
 Correr con:
-          python -m uvicorn main:app --reload 
+          python -m uvicorn src.main:app --reload
 '''
 
 app = FastAPI()
@@ -18,8 +19,8 @@ app.add_middleware(
 )
 
 
-
-DB_PATH = "data/recomendador.sqlite"  
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  
+DB_PATH = os.path.join(BASE_DIR, "data", "recomendador.sqlite")
 
 #GENEROS
 
