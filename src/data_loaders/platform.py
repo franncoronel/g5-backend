@@ -1,3 +1,5 @@
+# Ejecutar con "python -m src.data_loaders.platform"
+
 from src.database.entidades import motor
 from src.helpers import DBLoader
 from src.paths import RUTA_PLATAFORMA
