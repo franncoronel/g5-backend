@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from typing import List, Optional, Tuple
 import sqlite3
 
-from src.database.entidades import Genero, Persona
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  
 DB_PATH = os.path.join(BASE_DIR, "data", "recomendador.sqlite")
@@ -15,67 +14,89 @@ class PreferenceDTO(BaseModel):
     actors: Optional[List[str]] = None
     directors: Optional[List[str]] = None
 
-
+#@dataclass
 class Preference():
-    genres: Optional[List[Genero]]
-    #yearRange: Tuple[]
-    duration: Tuple[int,int]
-    actors: Optional[List[Persona]]
-    directors: Optional[List[Persona]]
+    def __init__(
+        self,
+        genres: Optional[List[int]],
+        duration: Tuple[int, int],
+        actors: Optional[List[str]],
+        directors: Optional[List[str]]
+    ):
+        self.genres = genres
+        self.duration = duration
+        self.actors = actors
+        self.directors = directors
 
-def mapPreference(preference:PreferenceDTO):
+def mapPreference(preferenceDTO:PreferenceDTO):
     conn, cursor=conectarBase()
     try:
-        genres = mapGenres(cursor,preference.genres)
-        actors = mapActors(cursor,preference.actors)
-        directors=mapDirectors(cursor,preference.directors)
+        mappedGenres = mapGenres(cursor,preferenceDTO.genres)
+        mappedActors = mapActors(cursor,preferenceDTO.actors)
+        mappedDirectors=mapDirectors(cursor,preferenceDTO.directors)
         
         mappedPreference = Preference(
-            genres=genres,
-            duration=preference.duration,
-            actors=actors,
-            directors=directors
+            genres=mappedGenres,
+            duration=preferenceDTO.duration,
+            actors=mappedActors,
+            directors=mappedDirectors
     )
+        
+        return mappedPreference
 
     finally:
         conn.close()
     
-    return mappedPreference
+    
 
 def conectarBase():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     return conn, cursor
 
-def mapGenres(cursor: sqlite3.Cursor, genresID: list[int]):
-    genres = []
-    for genre_id in genresID:
-        cursor.execute("SELECT id, nombre FROM genero WHERE id = ?", (genre_id,))
-        row = cursor.fetchone()
-        if row:
-            genres.append(Genero(id=row[0], nombre=row[1]))
-    return genres
+def mapGenres(cursor, genre_ids: list[int]) -> list[int]:
+    if not genre_ids:
+        return []
+
+    placeholders = ",".join(["?"] * len(genre_ids))
+    cursor.execute(f"SELECT id FROM genero WHERE id IN ({placeholders})", genre_ids)
+    result = cursor.fetchall()
+
+    return [row[0] for row in result]
     
 
-def mapActors(cursor: sqlite3.Cursor, actorsName: list[str]):
-    actors = []
-    for actorName in actorsName:
-        cursor.execute("""
-            SELECT * FROM persona
-            WHERE LOWER(nombre) LIKE ?
-        """, (f"%{actorName.lower()}%",))
-        coincidencias = cursor.fetchall()
-        actors.extend(coincidencias)
-    return actors
-    
-    
-def mapDirectors(cursor: sqlite3.Cursor,directorsName: list[str]):
-    directors=[]
-    for directorName in directorsName:
-        cursor.execute("""
-            SELECT * FROM persona
-            WHERE LOWER(nombre) LIKE ?
-        """, (f"%{directorName.lower()}%",))
-        coincidencias = cursor.fetchall()
-        directors.extend(coincidencias)
-    return directors
+def mapActors(cursor, actors_ids: list[str]) -> list[str]:
+    if not actors_ids:
+        return []
+
+    # Verificamos que existan en la tabla persona
+    placeholders = ",".join(["?"] * len(actors_ids))
+    cursor.execute(f"SELECT id FROM persona WHERE id IN ({placeholders})", actors_ids)
+    result = cursor.fetchall()
+
+    # Retornamos solo los IDs existentes
+    return [row[0] for row in result]
+
+
+def mapDirectors(cursor, directors_ids: list[str]) -> list[str]:
+    if not directors_ids:
+        return []
+
+    placeholders = ",".join(["?"] * len(directors_ids))
+    cursor.execute(f"SELECT id FROM persona WHERE id IN ({placeholders})", directors_ids)
+    result = cursor.fetchall()
+
+    return [row[0] for row in result]
+
+#TODO:
+
+#chequear que las personas existan como directores/actores en nuestra tabla y que si no se ignoren, como esta ahora podria
+#pasar que mappee a alguien porque figura en la tabla pero solo lo conozca como director
+
+#una vez hecho eso generalizar mapPersonas
+
+#chequear antes de mapear si el dto tiene esos datos (genero, actores, directores)
+
+#agregar yearRange
+
+#organizar codigo en diferentes archivos si es necesario
