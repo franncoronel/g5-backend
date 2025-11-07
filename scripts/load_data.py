@@ -26,7 +26,7 @@ def main():
                'python -m src.data_loaders.akas',
                'python -m src.data_loaders.professions',
                'python -m src.data_loaders.title_platform',
-               'python -m src.data_loaders.platform'
+               'python -m src.data_loaders.platform',
                'python -m src.data_loaders.title_professions'
                ]
   
