@@ -24,8 +24,8 @@ def main():
     df_titulos = pd.read_csv(RUTA_TITULOS)
     df_plataformas = pd.read_csv(RUTA_PLATAFORMAS)
 
-    print(f"📁 Titulos: {len(df_titulos):,}")
-    print(f"📁 Plataformas: {len(df_plataformas):,}")
+    # print(f"📁 Titulos: {len(df_titulos):,}")
+    # print(f"📁 Plataformas: {len(df_plataformas):,}")
 
     # ------------------------------------------------------------------
     # 2️⃣ Validar coincidencias entre ambos archivos
@@ -37,7 +37,7 @@ def main():
         how="inner"
     )
 
-    print(f"✅ Coincidencias encontradas: {len(df_merge):,}")
+    # print(f"✅ Coincidencias encontradas: {len(df_merge):,}")
 
     # Mostrar los que no coincidieron
     df_no_coinciden = df_plataformas.merge(
@@ -48,7 +48,7 @@ def main():
     ).query("_merge == 'left_only'")[["tconst", "primaryTitle"]]
 
     if not df_no_coinciden.empty:
-        print("\n⚠️ Registros del CSV de plataformas sin coincidencia en títulos:")
+        print("\nRegistros del CSV de plataformas sin coincidencia en títulos:")
         for _, fila in df_no_coinciden.iterrows():
             print(f"  - {fila['tconst']} | {fila['primaryTitle']}")
 
@@ -91,9 +91,9 @@ def main():
     cleaner.guardar_csv(df_plataformas_unicas, "plataforma.csv")
     cleaner.guardar_csv(df_relacional, "titulo_plataforma.csv")
 
-    print("\n✅ Archivos generados correctamente:")
-    print("   - plataforma.csv")
-    print("   - titulo_plataforma.csv")
+    # print("\n✅ Archivos generados correctamente:")
+    # print("   - plataforma.csv")
+    # print("   - titulo_plataforma.csv")
 
 if __name__ == "__main__":
     main()
