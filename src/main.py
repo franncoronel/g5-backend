@@ -3,7 +3,9 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 from typing import List, Dict
-from src.models.preference import PreferenceDTO, conectarBase
+
+from src.models.preference import PreferenceDTO
+
 '''
 Correr con:
           python -m uvicorn src.main:app --reload
@@ -33,40 +35,22 @@ def obtener_generos():
     conn.close()
     return generos
 
-@app.get("/personas")
-def buscar_personas(rol: str = None, nombre: str = ""):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+@app.get("/actores")
+def get_actores(busqueda: str = Query("", description="Texto para filtrar actores por nombre")):
+    """
+    Devuelve todas las personas que tengan la profesión 'actor' (id_profesion=1),
+    opcionalmente filtradas por nombre.
+    """
+    return buscar_personas_por_profesion("1", busqueda)
 
-    try:
-        # Primero verificamos si existe la columna 'rol'
-        cursor.execute("PRAGMA table_info(persona)")
-        columnas = [col[1] for col in cursor.fetchall()]
 
-        if "rol" in columnas and rol:
-            # Si la columna 'rol' existe, filtramos por rol y nombre
-            cursor.execute("""
-                SELECT * FROM persona
-                WHERE rol = ? AND nombre LIKE ?
-            """, (rol, f"%{nombre}%"))
-        else:
-            # Si no existe 'rol', solo filtramos por nombre
-            cursor.execute("""
-                SELECT * FROM persona
-                WHERE nombre LIKE ?
-            """, (f"%{nombre}%",))
-
-        resultados = cursor.fetchall()
-        conn.close()
-
-        # Convertimos los resultados en objetos legibles
-        return [
-            {"id": r[0], "nombre": r[1]} for r in resultados
-        ]
-
-    except Exception as e:
-        conn.close()
-        return {"error": str(e)}
+@app.get("/directores")
+def get_directores(busqueda: str = Query("", description="Texto para filtrar directores por nombre")):
+    """
+    Devuelve todas las personas que tengan la profesión 'director' (id_profesion=3),
+    opcionalmente filtradas por nombre.
+    """
+    return buscar_personas_por_profesion("3", busqueda)
 
 #RECIBIR PREFERENCIA DEL FRONTEND
 @app.post("/preferencias")
@@ -74,3 +58,31 @@ def recibir_preferencias(preferencia: PreferenceDTO):
     print("📩 Preferencias recibidas:")
     print(preferencia.model_dump())  # Versión en dict
     return {"mensaje": "Preferencias recibidas correctamente"}
+
+def buscar_personas_por_profesion(id_profesion: str, busqueda: str = "") -> List[Dict]:
+    """
+    Busca personas que tengan la profesión indicada (id_profesion)
+    y opcionalmente filtradas por nombre.
+    """
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = """
+        SELECT DISTINCT p.id, p.nombre
+        FROM persona p
+        JOIN profesion_titulo pt ON p.id = pt.id_persona
+        WHERE pt.id_profesion = ?
+    """
+
+    params = [id_profesion]
+
+    if busqueda:
+        query += " AND p.nombre LIKE ?"
+        params.append(f"%{busqueda}%")
+
+    cursor.execute(query, params)
+    resultados = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+    return resultados
