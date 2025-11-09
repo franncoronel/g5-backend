@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 from typing import List, Dict
 
-from src.models.preference import PreferenceDTO
+from src.models.preferencia import PreferenciaDTO
 
 '''
 Correr con:
@@ -54,7 +54,7 @@ def get_directores(busqueda: str = Query("", description="Texto para filtrar dir
 
 #RECIBIR PREFERENCIA DEL FRONTEND
 @app.post("/preferencias")
-def recibir_preferencias(preferencia: PreferenceDTO):
+def recibir_preferencias(preferencia: PreferenciaDTO):
     print("📩 Preferencias recibidas:")
     print(preferencia.model_dump())  # Versión en dict
     return {"mensaje": "Preferencias recibidas correctamente"}
