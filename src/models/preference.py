@@ -90,6 +90,8 @@ def mapDirectors(cursor, directors_ids: list[str]) -> list[str]:
 
 #TODO:
 
+#que cuando el usuario escribe director o actor haga la busqueda en el back y le devuelva opciones que coincidan
+
 #chequear que las personas existan como directores/actores en nuestra tabla y que si no se ignoren, como esta ahora podria
 #pasar que mappee a alguien porque figura en la tabla pero solo lo conozca como director
 
@@ -100,3 +102,7 @@ def mapDirectors(cursor, directors_ids: list[str]) -> list[str]:
 #agregar yearRange
 
 #organizar codigo en diferentes archivos si es necesario
+
+#traducir para consistencia en idioma
+
+#traducir generos o matarme
