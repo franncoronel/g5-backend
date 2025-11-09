@@ -1,14 +1,15 @@
+# Entornos virtuales y configuraciones locales
 .env
 .venv
 
+# Archivos temporales o compilados
 __pycache__/
 *.pyc
 
+# Datos locales y resultados de scraping
 data/
 *.csv
-
+*.sqlite
+*.db
 .ipynb_checkpoints/
 
-# Requerido solo para completado de datos
-# requests
-# python-dotenv
