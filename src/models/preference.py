@@ -40,8 +40,8 @@ def mapPreference(preferenceDTO:PreferenceDTO):
     conn, cursor=conectarBase()
     try:
         mappedGenres = mapGenres(cursor,preferenceDTO.genres)
-        mappedActors = mapActors(cursor,preferenceDTO.actors)
-        mappedDirectors=mapDirectors(cursor,preferenceDTO.directors)
+        mappedActors = mapPerson(cursor,preferenceDTO.actors)
+        mappedDirectors=mapPerson(cursor,preferenceDTO.directors)
         
         mappedPreference = Preference(
             genres=mappedGenres,
@@ -67,37 +67,22 @@ def mapGenres(cursor, genre_ids: list[int]) -> list[int]:
     return [row[0] for row in result]
     
 
-def mapActors(cursor, actors_ids: list[str]) -> list[str]:
-    if not actors_ids:
+def mapPerson(cursor, person_ids: list[str]) -> list[str]:
+    if not person_ids:
         return []
 
-    # Verificamos que existan en la tabla persona
-    placeholders = ",".join(["?"] * len(actors_ids))
-    cursor.execute(f"SELECT nombre FROM persona WHERE id IN ({placeholders})", actors_ids)
+    placeholders = ",".join(["?"] * len(person_ids))
+    cursor.execute(f"SELECT nombre FROM persona WHERE id IN ({placeholders})", person_ids)
     result = cursor.fetchall()
 
     return [row[0] for row in result]
 
 
-def mapDirectors(cursor, directors_ids: list[str]) -> list[str]:
-    if not directors_ids:
-        return []
-
-    placeholders = ",".join(["?"] * len(directors_ids))
-    cursor.execute(f"SELECT nombre FROM persona WHERE id IN ({placeholders})", directors_ids)
-    result = cursor.fetchall()
-
-    return [row[0] for row in result]
 
 #TODO:
 
 
-#chequear que las personas existan como directores/actores en nuestra tabla y que si no se ignoren, como esta ahora podria
-#pasar que mappee a alguien porque figura en la tabla pero solo lo conozca como director
-
 #una vez hecho eso generalizar mapPersonas
-
-#agregar yearRange
 
 #organizar codigo en diferentes archivos si es necesario
 
