@@ -8,3 +8,7 @@ data/
 *.csv
 
 .ipynb_checkpoints/
+
+# Requerido solo para completado de datos
+# requests
+# python-dotenv
