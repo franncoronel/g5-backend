@@ -1,4 +1,4 @@
-# Ejecutar con "python -m scripts.data_loaders.akas"
+# Ejecutar con "python -m src.data_loaders.akas"
 
 from src.database.entidades import motor
 from src.helpers import DBLoader
