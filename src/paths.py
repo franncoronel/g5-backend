@@ -15,7 +15,7 @@ RUTA_PRINCIPALES = os.path.join(DIR_DATA, "title.principals.tsv")
 RUTA_CRITICAS = os.path.join(DIR_DATA, "title.ratings.tsv")
 RUTA_ALIAS= os.path.join(DIR_DATA,"title.akas.tsv")
 #RUTA_PERSONAL = os.path.join(DIR_DATA, "title.crew.tsv")
-RUTA_PLATFORM=os.path.join(DIR_DATA,"archivo_prueba.csv")
+RUTA_PLATFORM=os.path.join(DIR_DATA,"peliculas_cargadas.csv")
 
 # Ruta de archivos filtrados
 RUTA_ALIAS_2019 = os.path.join(DIR_DATA_PROCESADA,"alias_2019.csv")
