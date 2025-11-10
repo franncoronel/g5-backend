@@ -8,6 +8,9 @@ DIR_DATA = os.path.join(RUTA_RAIZ, "data")
 # Carpeta donde se guardarán los archivos procesados
 DIR_DATA_PROCESADA = os.path.join(DIR_DATA, "processed")
 
+# Carpeta de caché
+DIR_CACHE = os.path.join(DIR_DATA, "cache_file")
+
 # Rutas a los archivos
 RUTA_TITULO = os.path.join(DIR_DATA, "title.basics.tsv")
 RUTA_NOMBRE = os.path.join(DIR_DATA, "name.basics.tsv")
