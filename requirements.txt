@@ -11,5 +11,10 @@ uvicorn
 jupyter
 ipykernel
 
+# Requerido solo para completado de datos
+# requests
+# python-dotenv
+# tqdm  # Muestra una barra de progreso
+
 # Traducciones
 deep-translator
