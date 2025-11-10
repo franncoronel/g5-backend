@@ -28,3 +28,6 @@ RUTA_PROFESIONES= os.path.join(DIR_DATA_PROCESADA,"profesiones.csv")
 
 # Base de datos
 RUTA_DB = os.path.join(DIR_DATA, "recomendador.sqlite")
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  
+DB_PATH = os.path.join(BASE_DIR, "data", "recomendador.sqlite")
