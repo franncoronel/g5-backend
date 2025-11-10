@@ -10,3 +10,6 @@ uvicorn
 # Jupyter y kernel
 jupyter
 ipykernel
+
+# Traducciones
+deep-translator
