@@ -36,7 +36,11 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 ├─ `requirements.txt`              → Dependencias de Python  
 └─ `.gitignore`                    → exclusiones  
 
----
+---  
+## Diagrama 
+![Der](der_tp_bbdd%20_%20Mermaid%20Chart-2025-11-10.png)  
+
+---  
 ## Setup
 
 Descargar datasets desde [DRIVE](https://drive.google.com/drive/u/1/folders/1WTljBvyIROGeLNetssgX6SuUPafAIAsl) y colocarlos en la carpeta `data/`.
