@@ -24,7 +24,7 @@ def buscar_personas_por_profesion(id_profesion: str, busqueda: str = "") -> List
 
     if busqueda:
         query += " AND p.nombre LIKE ?"
-        params.append(f"%{busqueda}%")
+        params.append(f"{busqueda}%")
 
     cursor.execute(query, params)
     resultados = [dict(row) for row in cursor.fetchall()]
