@@ -6,7 +6,7 @@ from src.paths import RUTA_TITULO_2019
 
 loader = DBLoader(motor)    # El motor de SQLAlchemy
 
-colum_eliminar=['endYear','originalTitle']
+colum_eliminar=['endYear','originalTitle','startYear']
 
 loader.cargar_con_modelo(
   ruta_csv=RUTA_TITULO_2019,
@@ -14,7 +14,6 @@ loader.cargar_con_modelo(
   renombrar={'tconst': 'id',
              'titleType': 'tipo',
              'primaryTitle':'titulo',
-             'runtimeMinutes':'duracion',
-             'startYear':'fecha_estreno'},
+             'runtimeMinutes':'duracion',},
   eliminar=colum_eliminar,
 )

@@ -5,7 +5,7 @@ Correr con:
 import os
 import pandas as pd
 from src.paths import (
-    RUTA_TITULO_2019, RUTA_ALIAS_2019, RUTA_CRITICAS_2019,
+    DIR_DATA_PROCESADA, RUTA_PLATFORM, RUTA_TITULO_2019, RUTA_ALIAS_2019, RUTA_CRITICAS_2019,
     RUTA_PRINCIPALES_2019, RUTA_NOMBRE_2019
 )
 
@@ -41,7 +41,51 @@ def main():
     principals = principals[principals["tconst"].isin(inter_tconst) & principals["nconst"].isin(inter_nconst)]
     nombres = nombres[nombres["nconst"].isin(inter_nconst)]
 
-    # ========== 5. Sobrescribir los archivos ==========
+    # ========== 5. Agregar columnas desde RUTA_PLATFORM ==========
+    print("\n🔹 Cargando datos faltantes en películas...")
+
+    try:
+        df_platform = pd.read_csv(RUTA_PLATFORM, sep=",", low_memory=False)
+
+        columnas_necesarias = ['tconst', 'primaryTitle', 'fecha_estreno', 'sinopsis', 'poster']
+        df_platform = df_platform[columnas_necesarias]
+
+        # Merge para agregar columnas
+        peliculas_merged = pd.merge(
+            peliculas,
+            df_platform,
+            on=['tconst', 'primaryTitle'],
+            how='left',
+            indicator=True
+        )
+
+        # Guardar registros faltantes
+        faltantes = peliculas_merged[peliculas_merged['_merge'] != 'both']
+        if not faltantes.empty:
+            # ruta_faltantes = os.path.join(DIR_DATA_PROCESADA, "faltantes_plataformas.csv")
+            # faltantes.to_csv(ruta_faltantes, index=False)
+
+            total = len(peliculas_merged)
+            faltantes_count = len(faltantes)
+            porcentaje = (faltantes_count / total) * 100
+
+            print(f"Registros sin coincidencia con RUTA_PLATFORM:")
+            print(f"→ Total registros: {total}")
+            print(f"→ Faltantes: {faltantes_count} ({porcentaje:.2f}%)")
+
+        # Eliminar columna auxiliar del merge
+        peliculas_merged.drop(columns=['_merge'], inplace=True)
+
+        # Si la fecha de estreno está vacía, cargar con 2019
+        if 'fecha_estreno' in peliculas_merged.columns:
+            peliculas_merged['fecha_estreno'] = peliculas_merged['fecha_estreno'].fillna('2019')
+
+        peliculas = peliculas_merged
+
+    except Exception as e:
+        print(f"❌ Error al combinar con archivo de plataformas: {e}")
+        
+    # ========== 6. Sobrescribir los archivos ==========
     print("💾 Sobrescribiendo archivos...")
 
     peliculas.to_csv(RUTA_TITULO_2019, index=False, encoding="utf-8")

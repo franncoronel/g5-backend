@@ -8,3 +8,8 @@ SQLAlchemy
 # Jupyter y kernel
 jupyter
 ipykernel
+
+# Requerido solo para completado de datos
+# requests
+# python-dotenv
+# tqdm  # Muestra una barra de progreso

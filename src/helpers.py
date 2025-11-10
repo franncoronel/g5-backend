@@ -259,18 +259,29 @@ class DBLoader:
               print(f"⚠ Valor inválido '{val}' para Enum en columna '{col}'")
               data[col] = None
 
-          # Date (solo año)
+          # Date (acepta año o fecha completa)
           elif isinstance(tipo_columna, Date):
             try:
               if pd.isna(val) or str(val).strip() == "":
-                data[col] = None
+                # Si no hay fecha, usa 2019 por defecto
+                data[col] = date(2019, 1, 1)
               else:
-                # Si el valor es numérico o cadena, tomamos el año
-                anio = int(float(val))
-                data[col] = date(anio, 1, 1)
+                val_str = str(val).strip()
+
+                # Caso: formato completo YYYY-MM-DD
+                if "-" in val_str:
+                  data[col] = pd.to_datetime(val_str, errors="coerce").date()
+                  if data[col] is None or pd.isna(data[col]):
+                    data[col] = date(2019, 1, 1)
+                
+                # Caso: solo año (numérico)
+                else:
+                  anio = int(float(val_str))
+                  data[col] = date(anio, 1, 1)
+
             except Exception:
               print(f"⚠ Error al convertir '{val}' en fecha para columna '{col}'")
-              data[col] = None
+              data[col] = date(2019, 1, 1)
 
           # Otros tipos
           else:

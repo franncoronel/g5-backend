@@ -42,6 +42,7 @@ class Titulo(Base):
     profesion_titulos: Mapped[List["Profesion_Titulo"]] = relationship(back_populates="titulo")
     generos: Mapped[List["Titulo_Genero"]] = relationship( back_populates="titulo")
     alternativos: Mapped[List["Titulo_Alternativo"]] = relationship(back_populates="titulo_rel")
+    plataformas: Mapped[List["Titulo_Plataforma"]] = relationship(back_populates="titulo")
 
     def __repr__(self):
         return f"Titulo(id={self.id}, tipo={self.tipo}, titulo={self.titulo!r}, duracion={self.duracion}, fecha_estreno={self.fecha_estreno})"
@@ -68,6 +69,29 @@ class Titulo_Genero(Base):
 
     def __repr__(self):
         return f"Titulo_Genero(id_titulo={self.id_titulo}, id_genero={self.id_genero})"
+
+class Plataforma(Base):
+    __tablename__ = "plataforma"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
+    nombre: Mapped[str]
+
+    titulos: Mapped[List["Titulo_Plataforma"]] = relationship(back_populates="plataforma")
+
+    def __repr__(self):
+        return f"Plataforma(id={self.id}, nombre={self.nombre!r})"
+
+class Titulo_Plataforma(Base):
+    __tablename__ = "titulo_plataforma"
+
+    id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
+    id_plataforma: Mapped[str] = mapped_column(ForeignKey("plataforma.id"), primary_key=True)
+
+    titulo: Mapped["Titulo"] = relationship(back_populates="plataformas")
+    plataforma: Mapped["Plataforma"] = relationship(back_populates="titulos")
+
+    def __repr__(self):
+        return f"Titulo_Plataforma(id_titulo={self.id_titulo}, id_plataforma={self.id_plataforma})"
 
 class Puntaje(Base):
     __tablename__ = "puntaje"
