@@ -1,6 +1,5 @@
 from src.database.conexion import conectarBase
 from src.models.preferencia import Preferencia, PreferenciaDTO
-from src.paths import DB_PATH
 
 
 def mapearPreferencia(preferenciaDTO:PreferenciaDTO):
