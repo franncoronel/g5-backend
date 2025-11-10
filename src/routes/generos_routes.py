@@ -13,7 +13,7 @@ def obtener_generos():
     conn.close()
 
     generos_traducidos = [
-        {"id": row[0], "nombre": traducir_genero(row[1])}
+        {"id": row[0], "nombre": traducir_genero(row[1]).capitalize()}
         for row in generos
     ]
 
