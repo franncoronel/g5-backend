@@ -3,6 +3,9 @@ import pandas as pd
 import os
 from src.paths import DIR_DATA_PROCESADA  # carpeta de archivos procesados
 from sqlalchemy import inspect
+from datetime import date
+from sqlalchemy.orm import Session
+from sqlalchemy import Enum as SqlEnum, Date
 
 class DatasetManager:
   def __init__(self,base_path=None):
@@ -171,6 +174,20 @@ class DBLoader:
   def __init__(self, motor):
     self.motor = motor
 
+  def _preparar_csv(self, ruta_csv, renombrar=None, eliminar=None):
+    if not os.path.exists(ruta_csv):
+      raise FileNotFoundError(f"No se encontró el archivo CSV en: {ruta_csv}")
+        
+    df = pd.read_csv(ruta_csv)
+
+    if eliminar:
+      df = df.drop(columns=eliminar, errors="ignore")
+
+    if renombrar:
+      df = df.rename(columns=renombrar)
+        
+    return df
+
   def cargar_csv(self,ruta_csv, tabla: str, renombrar: dict = None, eliminar: list = None,
                  modo: str = 'append', index: bool = False,auto_id: bool = False,):
     """Carga un archivo CSV en una tabla de base de datos.
@@ -187,18 +204,7 @@ class DBLoader:
         index : bool  #! No guardes el índice de Pandas como una columna
             Si se debe guardar el índice de Pandas como columna.
     """
-
-    if not os.path.exists(ruta_csv):
-      raise FileNotFoundError(f"No se encontró el archivo CSV en: {ruta_csv}")
-    
-    df = pd.read_csv(ruta_csv)
-
-    # Eliminar columnas si corresponde
-    if eliminar:
-      df = df.drop(columns=eliminar, errors="ignore")
-
-    if renombrar:
-      df = df.rename(columns=renombrar)
+    df = self._preparar_csv(ruta_csv, renombrar, eliminar)
 
     # Genero la columna 'id' si se solicita
     if auto_id and "id" not in df.columns:
@@ -210,7 +216,7 @@ class DBLoader:
       confirm = input(f"⚠ La tabla '{tabla}' ya existe. Reemplazarla? (s/n): ").strip().lower()
       if confirm != "s":
         print("Carga cancelada por el usuario.")
-        return #df # Devuelve el DataFrame final por si es necesario inspeccionarlo
+        return
 
     print(f"\nCargando datos a la tabla '{tabla}' ({len(df):,} registros)...")
     df.to_sql(tabla, 
@@ -220,4 +226,61 @@ class DBLoader:
     
     print(f"✅ Carga completada ({len(df):,} registros).")
 
-    #return df  # Devuelve el DataFrame final por si es necesario inspeccionarlo
+  def cargar_con_modelo(self, ruta_csv, modelo, renombrar=None, eliminar=None):
+    """
+    Carga un CSV usando el modelo SQLAlchemy para respetar tipos (como Enum o Date).
+    """
+    if not os.path.exists(ruta_csv):
+      raise FileNotFoundError(f"No se encontró el archivo CSV en: {ruta_csv}")
+    
+    df = pd.read_csv(ruta_csv)
+
+    if eliminar:
+      df = df.drop(columns=eliminar, errors="ignore")
+
+    if renombrar:
+      df = df.rename(columns=renombrar)
+    
+    with Session(self.motor) as session:
+      for _, fila in df.iterrows():
+        data = {}
+        for col, val in fila.items():
+          if not hasattr(modelo, col):
+            continue  # salta columnas que no existen en el modelo
+
+          tipo_columna = getattr(modelo, col).property.columns[0].type
+
+          # Enum
+          if isinstance(tipo_columna, SqlEnum):
+            enum_class = tipo_columna.enum_class
+            try:
+              data[col] = enum_class(val)
+            except ValueError:
+              print(f"⚠ Valor inválido '{val}' para Enum en columna '{col}'")
+              data[col] = None
+
+          # Date (solo año)
+          elif isinstance(tipo_columna, Date):
+            try:
+              if pd.isna(val) or str(val).strip() == "":
+                data[col] = None
+              else:
+                # Si el valor es numérico o cadena, tomamos el año
+                anio = int(float(val))
+                data[col] = date(anio, 1, 1)
+            except Exception:
+              print(f"⚠ Error al convertir '{val}' en fecha para columna '{col}'")
+              data[col] = None
+
+          # Otros tipos
+          else:
+            data[col] = None if pd.isna(val) else val
+
+        # Crear instancia y añadir
+        instancia = modelo(**data)
+        session.add(instancia)
+
+      session.commit()
+    
+    print(f"✅ Carga finalizada ({len(df)} registros).")
+

@@ -1,5 +1,5 @@
 
-# Ejecutar con "python -m scripts.data_loaders.professions"
+# Ejecutar con "python -m src.data_loaders.professions"
 
 from src.database.entidades import motor
 from src.helpers import DBLoader
