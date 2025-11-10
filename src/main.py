@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.routes import generos_routes, personas_routes, preferencias_routes
