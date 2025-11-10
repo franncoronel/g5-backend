@@ -12,4 +12,4 @@ data/
 *.sqlite
 *.db
 .ipynb_checkpoints/
-
+.vscode/
