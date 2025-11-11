@@ -12,8 +12,6 @@ def mapearPreferencia(preferenciaDTO:PreferenciaDTO):
         actoresMapeados = mapearPersonas(cursor,preferenciaDTO.actores)
         directoresMapeados=mapearPersonas(cursor,preferenciaDTO.directores)
 
-        print(generosMapeados,actoresMapeados,directoresMapeados)
-        
         preferenciaMapeada = Preferencia(
             generos=generosMapeados,
             rangoAnios=preferenciaDTO.rangoAnios,
@@ -21,12 +19,12 @@ def mapearPreferencia(preferenciaDTO:PreferenciaDTO):
             actores=actoresMapeados,
             directores=directoresMapeados
     )
-        
+
         return preferenciaMapeada
 
     finally:
         conn.close()
-    
+
 
 def mapearGeneros(cursor, genre_ids: List[int]) -> List[Genero]:
     if not genre_ids:
@@ -35,10 +33,8 @@ def mapearGeneros(cursor, genre_ids: List[int]) -> List[Genero]:
     placeholders = ",".join(["?"] * len(genre_ids))
     cursor.execute(f"SELECT * FROM genero WHERE id IN ({placeholders})", genre_ids)
     result = cursor.fetchall()
+    return result
 
-    print(result)
-    return [row[0] for row in result]
-    
 
 def mapearPersonas(cursor, person_ids: List[str]) -> List[Persona]:
     if not person_ids:
@@ -47,5 +43,4 @@ def mapearPersonas(cursor, person_ids: List[str]) -> List[Persona]:
     placeholders = ",".join(["?"] * len(person_ids))
     cursor.execute(f"SELECT * FROM persona WHERE id IN ({placeholders})", person_ids)
     result = cursor.fetchall()
-    print(result)
-    return [row[0] for row in result]
+    return result
