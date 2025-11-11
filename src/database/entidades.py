@@ -8,6 +8,8 @@ from datetime import date
 from enum import Enum
 from typing import List
 from sqlalchemy import ForeignKey, select
+from sqlalchemy.types import JSON, DateTime
+from datetime import datetime
 from src.paths import RUTA_DB
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -76,7 +78,7 @@ class Puntaje(Base):
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id")) # Al instanciar ForeignKey se pasa el nombre de la tabla, no de la clase, para relacionar las tablas.
     promedio: Mapped[float]
     cantidad_votos: Mapped[int]
-    
+
     pelicula: Mapped["Titulo"] = relationship(back_populates="puntajes")
 
     def __repr__(self):
@@ -94,7 +96,7 @@ class Persona(Base):
 
 class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de las profesiones que conservemos
     __tablename__ = "profesion_titulo"
-    
+
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"))
     id_persona: Mapped[str] = mapped_column(ForeignKey("persona.id"))
@@ -107,13 +109,13 @@ class Profesion_Titulo(Base): # También podría ser Director_Titulo, depende de
 
     def __repr__(self):
         return f"Profesion_Titulo(id_titulo={self.id_titulo}, id_persona={self.id_persona}, id_profesion={self.id_profesion}, nombre_personaje={self.nombre_personaje!r})"
-    
+
 class Profesion(Base):
     __tablename__ = "profesion"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     nombre: Mapped[str]
-    
+
     profesion_titulos: Mapped[List["Profesion_Titulo"]] = relationship(back_populates="profesion")
 
     def __repr__(self):
@@ -134,6 +136,17 @@ class Titulo_Alternativo(Base):
     def __repr__(self):
         return (f"Titulo_Alternativo(id_titulo={self.id_titulo}, titulo={self.titulo!r}, es_original={self.es_original}, region={self.region!r}, idioma={self.idioma!r})")
 
+class TituloEmbedding(Base):
+    __tablename__ = "titulo_embedding"
+
+    id_titulo: Mapped[str] = mapped_column(ForeignKey("titulo.id"), primary_key=True)
+    model: Mapped[str] = mapped_column(String, nullable=False)   # p.ej. "all-MiniLM-L6-v2"
+    dim: Mapped[int] = mapped_column(nullable=False)             # p.ej. 384
+    vector: Mapped[list[float]] = mapped_column(JSON, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    titulo: Mapped["Titulo"] = relationship()
+
 def crear_tablas() -> None:
     Base.metadata.create_all(motor) # Con esta línea podemos crear TODAS las tablas que hereden de Base
 
@@ -141,6 +154,6 @@ def crear_tablas() -> None:
         La Session establece una "conversación" con la base de datos. Dentro de una sesión podemos realizar distintas consultas y confirmarlas con session.commit().
         Es importante usar la sentencia with para que esta conexión con la base de datos se caiga al terminar de realizar operaciones
     """
-    
+
 if __name__ == "__main__":
     crear_tablas()
