@@ -56,7 +56,8 @@ def main():
     total_requests = 0
     total_procesados = len(procesados)
 
-    for i, (_, fila) in enumerate(tqdm(df.iterrows(), total=len(df), desc="🎞️ Obteniendo backdrops", ncols=100)):
+    for _, fila in tqdm(df.iterrows(), total=len(df), desc="Procesando películas", ncols=100):
+
         if total_requests >= LIMITE_DIARIO:
             print("⏸️ Límite diario alcanzado. Detén y continúa mañana.")
             break
@@ -96,7 +97,7 @@ def main():
 
         # 💾 Guardado progresivo
         if len(resultados) % BLOQUE_GUARDADO == 0:
-            faltantes = total_inicial - (len(procesados) + total_procesados)
+            faltantes = total_inicial - total_procesados
             print(f"💾 Guardando progreso ({len(resultados)} nuevos)... "
                   f"→ Procesados: {total_procesados} / {total_inicial} | Faltan: {faltantes}")
 
@@ -120,7 +121,7 @@ def main():
 
         sleep(PAUSA)
 
-    # Guardar lo restante
+    # Guardar lo restante al final
     if resultados:
         pd.DataFrame(resultados).to_csv(
             ruta_ok, mode="a", header=not os.path.exists(ruta_ok), index=False, encoding="utf-8-sig"
@@ -130,7 +131,7 @@ def main():
             ruta_no, mode="a", header=not os.path.exists(ruta_no), index=False, encoding="utf-8-sig"
         )
 
-    faltantes = total_inicial - (len(procesados) + total_procesados)
+    faltantes = total_inicial - total_procesados
     print(f"\n✅ Archivo generado: {ruta_ok}")
     print(f"📄 No encontradas: {ruta_no}")
     print(f"📊 Requests totales usados: {total_requests}")
