@@ -33,9 +33,11 @@ class Titulo(Base):
     tipo: Mapped[TipoTitulo] = mapped_column(SqlEnum(TipoTitulo), nullable=False)
     titulo: Mapped[str]
     duracion: Mapped[int]
+    fecha_estreno: Mapped[date]
+    idioma_original: Mapped[str]
     sinopsis: Mapped[str | None] = mapped_column(nullable=True, default="Sinopsis no disponible")
     poster: Mapped[str | None] = mapped_column(nullable=True, default="Imagen no disponible")
-    fecha_estreno: Mapped[date]
+    backdrop: Mapped[str | None] = mapped_column(nullable=True, default="Imagen no disponible")
 
     # Con relationship definimos la relación entre dos tablas, como es el caso de esta relación uno a muchos
     puntajes: Mapped[List["Puntaje"]] = relationship(back_populates="pelicula",cascade="all,delete-orphan")
