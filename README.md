@@ -16,25 +16,25 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 * Python
 
 ---
-## Estructura  
-`G5-BACKEND`/  
-│  
-├─ `data/`                         → Archivos de datos y datasets  
-│     └─ `processed`                → datos limpios/listos para análisis  
-│  
-├─ `scripts/`                        → Scripts para ejecutar procesos  
-│     └─ `run_data_cleaning.py`     → Ejecuta en orden los módulos de análisis  
-│     └─ `load_data.py`     → Ejecuta en orden los módulos para cargar la base de datos    
-│  
-├─ `src/`  
-│   └─ `data_analysis` → Limpieza de datos crudos  
-│   └─ `data_loaders`  → Carga de datos  
-│   └─ `database`  → Creación y diseño de Base de datos  
-│   └─ `notebooks`  → Jupyter Notebooks (exploración, pruebas, querys)  
-│  
-├─ `README.md`  
-├─ `requirements.txt`              → Dependencias de Python  
-└─ `.gitignore`                    → exclusiones  
+## Estructura
+`G5-BACKEND`/
+│
+├─ `data/`                         → Archivos de datos y datasets
+│     └─ `processed`                → datos limpios/listos para análisis
+│
+├─ `scripts/`                        → Scripts para ejecutar procesos
+│     └─ `run_data_cleaning.py`     → Ejecuta en orden los módulos de análisis
+│     └─ `load_data.py`     → Ejecuta en orden los módulos para cargar la base de datos
+│
+├─ `src/`
+│   └─ `data_analysis` → Limpieza de datos crudos
+│   └─ `data_loaders`  → Carga de datos
+│   └─ `database`  → Creación y diseño de Base de datos
+│   └─ `notebooks`  → Jupyter Notebooks (exploración, pruebas, querys)
+│
+├─ `README.md`
+├─ `requirements.txt`              → Dependencias de Python
+└─ `.gitignore`                    → exclusiones
 
 ---  
 ## Diagrama 
@@ -90,12 +90,7 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
----
-
-
-<!--
-## Uso
- 1. Activar el entorno virtual:
+5. Ingresar al entorno virtual cada vez que se quiera trabajar en el proyecto:
    - Linux/MacOS:
    ```bash
    source .venv/bin/activate
@@ -104,7 +99,21 @@ pip install -r requirements.txt
    ```bash
    .\.venv\Scripts\Activate
    ```
-2. Si no están creados los datasets procesados, correr el script de procesamiento:
-   ```bash
-   python src/data_analysis/data_processing.py
-   ``` -->
+
+6. Generar archivos CSV:
+```bash
+python scripts/run_data_cleaning.py
+```
+
+7. Cargar la base de datos:
+```bash
+python scripts/load_data.py
+```
+
+8. Listo para usar el proyecto!
+
+```bash
+python -m uvicorn src.main:app --reload
+```
+
+---
