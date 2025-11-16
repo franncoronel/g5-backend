@@ -34,10 +34,10 @@ class Titulo(Base):
     titulo: Mapped[str]
     duracion: Mapped[int]
     fecha_estreno: Mapped[date]
-    idioma_original: Mapped[str]
+    idioma_original: Mapped[str | None] = mapped_column(String(10), nullable=True)
     sinopsis: Mapped[str | None] = mapped_column(nullable=True, default="Sinopsis no disponible")
-    poster: Mapped[str | None] = mapped_column(nullable=True, default="Imagen no disponible")
-    backdrop: Mapped[str | None] = mapped_column(nullable=True, default="Imagen no disponible")
+    poster: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    backdrop: Mapped[str | None] = mapped_column(String(300), nullable=True)
 
     # Con relationship definimos la relación entre dos tablas, como es el caso de esta relación uno a muchos
     puntajes: Mapped[List["Puntaje"]] = relationship(back_populates="pelicula",cascade="all,delete-orphan")
@@ -47,7 +47,7 @@ class Titulo(Base):
     plataformas: Mapped[List["Titulo_Plataforma"]] = relationship(back_populates="titulo")
 
     def __repr__(self):
-        return f"Titulo(id={self.id}, tipo={self.tipo}, titulo={self.titulo!r}, duracion={self.duracion}, fecha_estreno={self.fecha_estreno})"
+        return f"Titulo(id={self.id}, tipo={self.tipo}, titulo={self.titulo!r}, duracion={self.duracion}, fecha_estreno={self.fecha_estreno} , idioma_original={self.idioma_original} )"
 
 class Genero(Base):
     __tablename__ = "genero"
