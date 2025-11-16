@@ -41,7 +41,7 @@ def buscar_pelicula(nombre, anio=None, idioma="es-ES"):
 
 
 def obtener_datos_tmdb(nombre, original=None, anio=None, id_tmdb=None):
-    """Obtiene sinopsis, poster, idioma original y plataformas."""
+    """Obtiene sinopsis, poster, backdrop, idioma original y plataformas."""
     pelicula = None
 
     # 1️⃣ Si tengo id_tmdb, voy directo
@@ -52,7 +52,7 @@ def obtener_datos_tmdb(nombre, original=None, anio=None, id_tmdb=None):
         else:
             print(f"⚠️ No se encontró ID TMDB {id_tmdb}")
 
-    # 2️⃣ Si no tengo ID, busco por título
+    # 2️⃣ Si no tengo ID, busco por nombre
     if not pelicula:
         posibles_anios = []
         if anio and str(anio).isdigit():
@@ -79,31 +79,34 @@ def obtener_datos_tmdb(nombre, original=None, anio=None, id_tmdb=None):
 
     movie_id = pelicula["id"]
 
-    # --- Sinopsis ---
+    # --- SINOPSIS ---
     sinopsis = pelicula.get("overview", "")
     if not sinopsis:
-        # Buscar en inglés si no hay en español
         r_en = requests.get(f"{BASE_URL}/movie/{movie_id}", params={"api_key": API_KEY, "language": "en-US"})
         if r_en.status_code == 200:
             sinopsis = r_en.json().get("overview", "")
     if not sinopsis:
         sinopsis = f"Sinopsis no disponible para {nombre}."
 
-    # --- Poster ---
+    # --- POSTER ---
     poster_path = pelicula.get("poster_path")
     poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else ""
 
-    # --- Idioma original ---
+    # --- BACKGROUND (BACKDROP) ---
+    backdrop_path = pelicula.get("backdrop_path")
+    backdrop_url = f"https://image.tmdb.org/t/p/original{backdrop_path}" if backdrop_path else ""
+
+    # --- IDIOMA ORIGINAL ---
     idioma_original = pelicula.get("original_language", "")
 
-    # --- Plataformas ---
+    # --- PLATAFORMAS ---
     plataformas = "No disponible"
     r2 = requests.get(f"{BASE_URL}/movie/{movie_id}/watch/providers", params={"api_key": API_KEY})
     if r2.status_code == 200:
         provs = r2.json().get("results", {}).get("AR")
         if provs and "flatrate" in provs:
             plataformas = ", ".join(p["provider_name"] for p in provs["flatrate"])
-    
+
     fecha_estreno = pelicula.get("release_date", "")
     sleep(PAUSA)
 
@@ -111,6 +114,7 @@ def obtener_datos_tmdb(nombre, original=None, anio=None, id_tmdb=None):
         "id_tmdb": movie_id,
         "sinopsis": sinopsis,
         "poster": poster_url,
+        "background": backdrop_url,
         "idioma_original": idioma_original,
         "plataformas": plataformas,
         "fecha_estreno": fecha_estreno
@@ -156,10 +160,11 @@ for fila in peliculas_a_buscar:
             "id_tmdb": datos.get("id_tmdb", ""),
             "sinopsis": datos.get("sinopsis", ""),
             "poster": datos.get("poster", ""),
+            "background": datos.get("background", ""),
             "idioma_original": datos.get("idioma_original", ""),
             "plataformas": datos.get("plataformas", ""),
-            "fecha_estreno": datos.get("fecha_estreno", ""),
-        }
+            "fecha_estreno": datos.get("fecha_estreno", "")
+}
     else:
         # Si no encontró nada, igual agregamos la fila vacía para mantener columnas
         fila_actualizada = {
@@ -169,6 +174,7 @@ for fila in peliculas_a_buscar:
             "id_tmdb": "",
             "sinopsis": "",
             "poster": "",
+            "background":"",
             "idioma_original": "",
             "plataformas": "",
             "fecha_estreno": "",
