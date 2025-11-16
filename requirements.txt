@@ -15,3 +15,6 @@ ipykernel
 # requests
 # python-dotenv
 # tqdm  # Muestra una barra de progreso
+
+# Traducciones
+deep-translator

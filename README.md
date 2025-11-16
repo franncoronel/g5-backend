@@ -16,25 +16,31 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 * Python
 
 ---
-## Estructura
-`G5-BACKEND`/
-│
-├─ `data/`                         → Archivos de datos y datasets
-│     └─ `processed`                → datos limpios/listos para análisis
-│
-├─ `scripts/`                        → Scripts para ejecutar procesos
-│     └─ `run_data_cleaning.py`     → Ejecuta en orden los módulos de análisis
-│     └─ `load_data.py`     → Ejecuta en orden los módulos para cargar la base de datos
-│
-├─ `src/`
-│   └─ `data_analysis` → Limpieza de datos crudos
-│   └─ `data_loaders`  → Carga de datos
-│   └─ `database`  → Creación y diseño de Base de datos
-│   └─ `notebooks`  → Jupyter Notebooks (exploración, pruebas, querys)
-│
-├─ `README.md`
-├─ `requirements.txt`              → Dependencias de Python
-└─ `.gitignore`                    → exclusiones
+## Estructura  
+`G5-BACKEND`/  
+│  
+├─ `data/`                         → Archivos de datos y datasets  
+│     └─ `processed`                → datos limpios/listos para análisis  
+│  
+├─ `scripts/`                        → Scripts para ejecutar procesos  
+│     └─ `run_data_cleaning.py`     → Ejecuta en orden los módulos de análisis  
+│     └─ `load_data.py`     → Ejecuta en orden los módulos para cargar la base de datos    
+│  
+├─ `src/`  
+│   └─ `data_analysis` → Limpieza de datos crudos  
+│   └─ `data_loaders`  → Carga de datos  
+│   └─ `database`  → Creación y diseño de Base de datos  
+│   └─ `models`     
+│   └─ `notebooks`  → Jupyter Notebooks (exploración, pruebas, querys)  
+│   └─ `repositories`    
+│   └─ `routes`    
+│   └─ `utils`  → funciones auxiliares  
+│   └─ `main.py`  → orquestación de endpoints  
+│  
+├─ `der.png`  →   Diagrama entidad-relacion  
+├─ `README.md`  
+├─ `requirements.txt`              → Dependencias de Python  
+└─ `.gitignore`                    → exclusiones  
 
 ---  
 ## Diagrama 
