@@ -1,7 +1,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.routes import anios_routes, generos_routes, personas_routes, preferencias_routes
+from src.routes import anios_routes, duraciones_routes, generos_routes, personas_routes, preferencias_routes
 
 
 '''
@@ -23,5 +23,5 @@ app.include_router(generos_routes.router)
 app.include_router(personas_routes.router)
 app.include_router(preferencias_routes.router)
 app.include_router(anios_routes.router)
-
+app.include_router(duraciones_routes.router)
 
