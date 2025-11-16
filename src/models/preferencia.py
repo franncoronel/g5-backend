@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Tuple
 
+from src.database.entidades import Genero, Persona
+
 class PreferenciaDTO(BaseModel):
     generos: Optional[List[int]] = Field(None, alias="genres")
     rangoAnios: Tuple[int, int] = Field(..., alias="yearRange")
@@ -14,11 +16,11 @@ class PreferenciaDTO(BaseModel):
 class Preferencia():
     def __init__(
         self,
-        generos: Optional[List[int]],
+        generos: Optional[List[Genero]],
         rangoAnios: Tuple[int, int],
         duracion: Tuple[int, int],
-        actores: Optional[List[str]],
-        directores: Optional[List[str]]
+        actores: Optional[List[Persona]],
+        directores: Optional[List[Persona]]
     ):
         self.generos = generos
         self.rangoAnios = rangoAnios

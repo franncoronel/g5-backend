@@ -2,7 +2,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.routes import generos_routes, personas_routes, preferencias_routes
-
+from sqlalchemy.orm import Session
+from src.database.entidades import Base, motor
+from src.ai.embeddings import ensure_title_embeddings, get_embedder
 
 '''
 Correr con:
@@ -10,6 +12,17 @@ Correr con:
 '''
 
 app = FastAPI()
+
+@app.on_event("startup")
+def _startup():
+    # Asegurar tablas
+    Base.metadata.create_all(motor)
+    # Warm-up del modelo para no pagar el costo en la primera request
+    get_embedder()
+    # Generar embeddings faltantes
+    with Session(motor) as s:
+        created = ensure_title_embeddings(s)
+        print(f"[startup] Embeddings creados: {created}")
 
 app.add_middleware(
     CORSMiddleware,
