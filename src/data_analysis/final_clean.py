@@ -5,7 +5,7 @@ Correr con:
 import os
 import pandas as pd
 from src.paths import (
-    DIR_DATA_PROCESADA, RUTA_PLATFORM, RUTA_TITULO_2019, RUTA_ALIAS_2019, RUTA_CRITICAS_2019,
+    DIR_DATA_PROCESADA, RUTA_PELICULAS_TMDB, RUTA_TITULO_2019, RUTA_ALIAS_2019, RUTA_CRITICAS_2019,
     RUTA_PRINCIPALES_2019, RUTA_NOMBRE_2019
 )
 
@@ -41,35 +41,32 @@ def main():
     principals = principals[principals["tconst"].isin(inter_tconst) & principals["nconst"].isin(inter_nconst)]
     nombres = nombres[nombres["nconst"].isin(inter_nconst)]
 
-    # ========== 5. Agregar columnas desde RUTA_PLATFORM ==========
-    print("\n🔹 Cargando datos faltantes en películas...")
+    # ========== 5. Agregar columnas desde RUTA_PELICULAS_TMDB ==========
+    print("\n🔹 Cargando datos faltantes en películas (poster, sinopsis, idioma, backdrop)...")
 
     try:
-        df_platform = pd.read_csv(RUTA_PLATFORM, sep=",", low_memory=False)
+        df_tmdb = pd.read_csv(RUTA_PELICULAS_TMDB, sep=",", low_memory=False)
 
-        columnas_necesarias = ['tconst', 'primaryTitle', 'fecha_estreno', 'sinopsis', 'poster']
-        df_platform = df_platform[columnas_necesarias]
+        columnas_necesarias = ['tconst', 'primaryTitle', 'fecha_estreno', 'sinopsis', 'poster', 'idioma_original', 'backdrop']
+        df_tmdb =df_tmdb[columnas_necesarias]
 
         # Merge para agregar columnas
         peliculas_merged = pd.merge(
             peliculas,
-            df_platform,
+            df_tmdb,
             on=['tconst', 'primaryTitle'],
             how='left',
             indicator=True
         )
 
-        # Guardar registros faltantes
+        # detectar registros faltantes
         faltantes = peliculas_merged[peliculas_merged['_merge'] != 'both']
         if not faltantes.empty:
-            # ruta_faltantes = os.path.join(DIR_DATA_PROCESADA, "faltantes_plataformas.csv")
-            # faltantes.to_csv(ruta_faltantes, index=False)
-
             total = len(peliculas_merged)
             faltantes_count = len(faltantes)
             porcentaje = (faltantes_count / total) * 100
 
-            print(f"Registros sin coincidencia con RUTA_PLATFORM:")
+            print(f"Registros sin coincidencia con RUTA_PELICULAS_TMDB:")
             print(f"→ Total registros: {total}")
             print(f"→ Faltantes: {faltantes_count} ({porcentaje:.2f}%)")
 
@@ -83,7 +80,7 @@ def main():
         peliculas = peliculas_merged
 
     except Exception as e:
-        print(f"❌ Error al combinar con archivo de plataformas: {e}")
+        print(f"❌ Error al combinar con TMDB actualizado: {e}")
         
     # ========== 6. Sobrescribir los archivos ==========
     print("💾 Sobrescribiendo archivos...")
