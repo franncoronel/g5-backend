@@ -6,6 +6,7 @@ scikit-learn
 SQLAlchemy
 fastapi
 uvicorn
+sentence_transformers
 
 # Jupyter y kernel
 jupyter
