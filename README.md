@@ -30,8 +30,14 @@ Backend para el proyecto final de la materia Bases de Datos de la Tecnicatura en
 │   └─ `data_analysis` → Limpieza de datos crudos  
 │   └─ `data_loaders`  → Carga de datos  
 │   └─ `database`  → Creación y diseño de Base de datos  
+│   └─ `models`     
 │   └─ `notebooks`  → Jupyter Notebooks (exploración, pruebas, querys)  
+│   └─ `repositories`    
+│   └─ `routes`    
+│   └─ `utils`  → funciones auxiliares  
+│   └─ `main.py`  → orquestación de endpoints  
 │  
+├─ `der.png`  →   Diagrama entidad-relacion  
 ├─ `README.md`  
 ├─ `requirements.txt`              → Dependencias de Python  
 └─ `.gitignore`                    → exclusiones  
@@ -90,12 +96,7 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
----
-
-
-<!--
-## Uso
- 1. Activar el entorno virtual:
+5. Ingresar al entorno virtual cada vez que se quiera trabajar en el proyecto:
    - Linux/MacOS:
    ```bash
    source .venv/bin/activate
@@ -104,7 +105,21 @@ pip install -r requirements.txt
    ```bash
    .\.venv\Scripts\Activate
    ```
-2. Si no están creados los datasets procesados, correr el script de procesamiento:
-   ```bash
-   python src/data_analysis/data_processing.py
-   ``` -->
+
+6. Generar archivos CSV:
+```bash
+python scripts/run_data_cleaning.py
+```
+
+7. Cargar la base de datos:
+```bash
+python scripts/load_data.py
+```
+
+8. Listo para usar el proyecto!
+
+```bash
+python -m uvicorn src.main:app --reload
+```
+
+---

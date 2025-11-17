@@ -4,6 +4,9 @@ numpy
 pandas
 scikit-learn
 SQLAlchemy
+fastapi
+uvicorn
+sentence_transformers
 
 # Jupyter y kernel
 jupyter
@@ -13,3 +16,6 @@ ipykernel
 # requests
 # python-dotenv
 # tqdm  # Muestra una barra de progreso
+
+# Traducciones
+deep-translator
