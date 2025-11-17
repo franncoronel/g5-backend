@@ -12,7 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../..")))
 from src.helpers import DataCleaner
 from src.paths import DIR_DATA_PROCESADA
 from src.paths import RUTA_TITULO_2019 as RUTA_TITULOS
-from src.paths import RUTA_PLATFORM as RUTA_PLATAFORMAS
+from src.paths import RUTA_PELICULAS_TMDB as RUTA_PLATAFORMAS
 
 
 def main():
