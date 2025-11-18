@@ -54,9 +54,10 @@ def _text_for_title(session: Session, t: Titulo) -> str:
 
     return " | ".join(partes)
 
-def ensure_title_embeddings(session: Session) -> int:
+def ensure_title_embeddings(session: Session, batch_size: int = 10000) -> int:
     """
     Crea embeddings solo para títulos que no tienen embedding almacenado.
+    Hace commits parciales cada `batch_size` registros.
     Devuelve la cantidad creada.
     """
     embedder = get_embedder()
@@ -70,19 +71,30 @@ def ensure_title_embeddings(session: Session) -> int:
     if not missing:
         return 0
 
-    texts: List[str] = [_text_for_title(session, t) for t in missing]
-    mat = embedder.encode(texts, normalize_embeddings=True)  # np.ndarray [n, dim]
-    dim = mat.shape[1]
+    total_created = 0
 
-    for t, vec in zip(missing, mat):
-        session.merge(TituloEmbedding(
-            id_titulo=t.id,
-            model=MODEL_NAME,
-            dim=int(dim),
-            vector=vec.astype(float).tolist()
-        ))
-    session.commit()
-    return len(missing)
+    # Procesar en lotes
+    for i in range(0, len(missing), batch_size):
+        batch = missing[i:i + batch_size]
+
+        texts: List[str] = [_text_for_title(session, t) for t in batch]
+        mat = embedder.encode(texts, normalize_embeddings=True)
+        dim = mat.shape[1]
+
+        for t, vec in zip(batch, mat):
+            session.merge(TituloEmbedding(
+                id_titulo=t.id,
+                model=MODEL_NAME,
+                dim=int(dim),
+                vector=vec.astype(float).tolist()
+            ))
+
+        # ✅ Commit parcial cada batch
+        session.commit()
+        total_created += len(batch)
+        print(f"  ✓ Embeddings guardados: {total_created}/{len(missing)} ({(total_created/len(missing)*100):.1f}%)")
+
+    return total_created
 
 def embed_query_from_preference(pref) -> np.ndarray:
     """
