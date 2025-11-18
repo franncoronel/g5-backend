@@ -96,13 +96,33 @@ def ensure_title_embeddings(session: Session, batch_size: int = 10000) -> int:
 
     return total_created
 
-def embed_query_from_preference(pref) -> np.ndarray:
+def embed_query_from_preference(pref, session: Session = None) -> np.ndarray:
     """
     pref: instancia de PreferenciaDTO (o dict) ya validada.
     La convertimos a un texto estilo 'consulta' y la embebemos.
     """
-    # Armamos un texto descriptivo con soft constraints (no filtra duro)
-    genres = ", ".join(pref.genres) if getattr(pref, "genres", None) else ""
+    print('✅ Preferencia', pref)
+    # ✅ Mapear IDs de géneros a nombres
+    genre_names = []
+    if getattr(pref, "genres", None):
+        if session is None:
+            from src.database.entidades import motor
+            session = Session(motor)
+            close_session = True
+        else:
+            close_session = False
+
+        genre_ids = pref.genres
+        genre_names = session.execute(
+            select(Genero.nombre)
+            .where(Genero.id.in_(genre_ids))
+        ).scalars().all()
+
+        if close_session:
+            session.close()
+
+    genres = ", ".join(genre_names) if genre_names else ""
+
     yr = getattr(pref, "yearRange", None) or []
     dur = getattr(pref, "duration", None) or []
     actors = getattr(pref, "actors", "") or ""
@@ -116,5 +136,11 @@ def embed_query_from_preference(pref) -> np.ndarray:
     if directors: parts.append(f"or directors: {directors}")
 
     query_text = " | ".join(parts)
+    print(f"\n🔍 Query generada: {query_text}")
+
     emb = get_embedder().encode([query_text], normalize_embeddings=True)
+
+    print(f"📊 Embedding shape: {emb[0].shape}")
+    print(f"📊 Embedding primeros 5 valores: {emb[0][:5]}")
+
     return emb[0]  # (dim,)

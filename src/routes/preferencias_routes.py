@@ -26,14 +26,12 @@ def recibir_preferencias(
     ):
     """
     Retorna las mejores películas según similitud de embeddings con la preferencia.
-    Mezcla (opcional) con rating usando: score = alpha * sim + (1-alpha) * rating_norm
-    - top_k: cantidad de resultados
-    - alpha: peso de la similitud (1.0 = solo embedding)
     """
 
-    q_vec = embed_query_from_preference(preferenciaDTO)  # np.array (dim,)
-
     with Session(motor) as s:
+        # ✅ Pasar sesión para mapear géneros
+        q_vec = embed_query_from_preference(preferenciaDTO, session=s)
+
         rows = s.execute(
             select(Titulo, TituloEmbedding, Puntaje)
             .join(TituloEmbedding, Titulo.id == TituloEmbedding.id_titulo)
@@ -52,6 +50,10 @@ def recibir_preferencias(
         M = np.vstack(vecs)  # [n, dim]
         # similitud coseno asumiendo embeddings normalizados
         sims = (M @ q_vec).astype(float)  # [n,] porque ambos normalizados
+
+        # ✅ LOGS TEMPORALES
+        print(f"\n📊 Similitudes - Min: {sims.min():.4f}, Max: {sims.max():.4f}, Mean: {sims.mean():.4f}")
+        print(f"📊 Top 5 similitudes más altas: {sorted(sims, reverse=True)[:5]}")
 
         # Score mixto con rating (opcional)
         scores = []
