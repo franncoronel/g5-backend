@@ -21,7 +21,6 @@ def get_embedder():
 
 def _text_for_title(session: Session, t: Titulo) -> str:
     # Juntamos metadata útil para “describir” la película
-    # géneros
     gens = session.execute(
         select(Genero.nombre)
         .join(Titulo_Genero, Genero.id == Titulo_Genero.id_genero)
@@ -29,7 +28,6 @@ def _text_for_title(session: Session, t: Titulo) -> str:
     ).scalars().all()
     generos = ", ".join(gens) if gens else ""
 
-    # profesiones (directores/actores principales)
     profs = session.execute(
         select(Profesion.nombre, Persona.nombre)
         .join(Profesion_Titulo, Profesion.id == Profesion_Titulo.id_profesion)
@@ -55,13 +53,7 @@ def _text_for_title(session: Session, t: Titulo) -> str:
     return " | ".join(partes)
 
 def ensure_title_embeddings(session: Session, batch_size: int = 10000) -> int:
-    """
-    Crea embeddings solo para títulos que no tienen embedding almacenado.
-    Hace commits parciales cada `batch_size` registros.
-    Devuelve la cantidad creada.
-    """
     embedder = get_embedder()
-    # Títulos sin embedding
     missing = session.execute(
         select(Titulo)
         .outerjoin(TituloEmbedding, TituloEmbedding.id_titulo == Titulo.id)
@@ -72,11 +64,8 @@ def ensure_title_embeddings(session: Session, batch_size: int = 10000) -> int:
         return 0
 
     total_created = 0
-
-    # Procesar en lotes
     for i in range(0, len(missing), batch_size):
         batch = missing[i:i + batch_size]
-
         texts: List[str] = [_text_for_title(session, t) for t in batch]
         mat = embedder.encode(texts, normalize_embeddings=True)
         dim = mat.shape[1]
@@ -88,8 +77,6 @@ def ensure_title_embeddings(session: Session, batch_size: int = 10000) -> int:
                 dim=int(dim),
                 vector=vec.astype(float).tolist()
             ))
-
-        # ✅ Commit parcial cada batch
         session.commit()
         total_created += len(batch)
         print(f"  ✓ Embeddings guardados: {total_created}/{len(missing)} ({(total_created/len(missing)*100):.1f}%)")
@@ -97,11 +84,7 @@ def ensure_title_embeddings(session: Session, batch_size: int = 10000) -> int:
     return total_created
 
 def embed_query_from_preference(pref, session: Session = None) -> np.ndarray:
-    """
-    pref: instancia de PreferenciaDTO (o dict) ya validada.
-    La convertimos a un texto estilo 'consulta' y la embebemos.
-    """
-    # ✅ Mapear IDs de géneros a nombres
+    # Mapear IDs de géneros a nombres
     genre_names = []
     if getattr(pref, "genres", None):
         if session is None:
@@ -112,62 +95,38 @@ def embed_query_from_preference(pref, session: Session = None) -> np.ndarray:
             close_session = False
 
         genre_ids = pref.genres
-        print(f"🔍 DEBUG - genre_ids: {genre_ids}")
-
         genre_names = session.execute(
-            select(Genero.nombre)
-            .where(Genero.id.in_(genre_ids))
+            select(Genero.nombre).where(Genero.id.in_(genre_ids))
         ).scalars().all()
-
-        print(f"🔍 DEBUG - genre_names: {list(genre_names)}")
 
         if close_session:
             session.close()
 
-    genres = ", ".join(genre_names) if genre_names else ""
-    yr = getattr(pref, "yearRange", None) or []
-    dur = getattr(pref, "duration", None) or []
+    genres = list(genre_names) if genre_names else []
     actors = getattr(pref, "actors", []) or []
     directors = getattr(pref, "directors", []) or []
 
-    # ✅ USAR EL MISMO FORMATO QUE _text_for_title
+    # ARMAMOS EL PROMPT SEMÁNTICO
     parts = []
+    parts.append("This is a movie recommendation based on preferences.")
 
-    # Campos básicos (simular una película genérica)
-    parts.append("type: movie")
-
-    if yr and len(yr) >= 2:
-        # Usar el año medio como referencia
-        avg_year = (yr[0] + yr[1]) // 2
-        parts.append(f"year: {avg_year}")
-
-    if dur and len(dur) >= 2:
-        # Usar duración media
-        avg_dur = (dur[0] + dur[1]) // 2
-        parts.append(f"duration_min: {avg_dur}")
-
-    # Géneros (mismo formato)
     if genres:
-        parts.append(f"genres: {genres}")
+        g_str = ", ".join(genres)
+        parts.append(f"A {g_str} movie.")
+        parts.append(f"Genres: {g_str}.") 
 
-    # Directores (mismo formato)
     if directors:
-        if isinstance(directors, list):
-            directors = ", ".join(directors[:5])
-        parts.append(f"directors: {directors}")
+        d_str = ", ".join(directors[:5]) if isinstance(directors, list) else directors
+        parts.append(f"Directed by {d_str}.")
 
-    # Actores (mismo formato)
     if actors:
-        if isinstance(actors, list):
-            actors = ", ".join(actors[:5])
-        parts.append(f"actors: {actors}")
+        a_str = ", ".join(actors[:5]) if isinstance(actors, list) else actors
+        parts.append(f"Starring {a_str}.")
+    
+    parts.append("Features a compelling story and plot.")
 
-    query_text = " | ".join(parts)
-    print(f"\n🔍 Query generada: {query_text}")
+    query_text = " ".join(parts)
+    print(f"\n🔍 Query generada (Semántica): {query_text}")
 
     emb = get_embedder().encode([query_text], normalize_embeddings=True)
-
-    print(f"📊 Embedding shape: {emb[0].shape}")
-    print(f"📊 Embedding primeros 5 valores: {emb[0][:5]}")
-
-    return emb[0]  # (dim,)
+    return emb[0]
