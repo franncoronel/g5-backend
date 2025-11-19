@@ -101,7 +101,6 @@ def embed_query_from_preference(pref, session: Session = None) -> np.ndarray:
     pref: instancia de PreferenciaDTO (o dict) ya validada.
     La convertimos a un texto estilo 'consulta' y la embebemos.
     """
-    print('✅ Preferencia', pref)
     # ✅ Mapear IDs de géneros a nombres
     genre_names = []
     if getattr(pref, "genres", None):
@@ -113,27 +112,55 @@ def embed_query_from_preference(pref, session: Session = None) -> np.ndarray:
             close_session = False
 
         genre_ids = pref.genres
+        print(f"🔍 DEBUG - genre_ids: {genre_ids}")
+
         genre_names = session.execute(
             select(Genero.nombre)
             .where(Genero.id.in_(genre_ids))
         ).scalars().all()
 
+        print(f"🔍 DEBUG - genre_names: {list(genre_names)}")
+
         if close_session:
             session.close()
 
     genres = ", ".join(genre_names) if genre_names else ""
-
     yr = getattr(pref, "yearRange", None) or []
     dur = getattr(pref, "duration", None) or []
-    actors = getattr(pref, "actors", "") or ""
-    directors = getattr(pref, "directors", "") or ""
+    actors = getattr(pref, "actors", []) or []
+    directors = getattr(pref, "directors", []) or []
 
-    parts = ["Find movies"]
-    if genres: parts.append(f"in genres: {genres}")
-    if yr: parts.append(f"released between: {yr[0]} and {yr[1]}")
-    if dur: parts.append(f"duration between: {dur[0]} and {dur[1]} minutes")
-    if actors: parts.append(f"related to actors: {actors}")
-    if directors: parts.append(f"or directors: {directors}")
+    # ✅ USAR EL MISMO FORMATO QUE _text_for_title
+    parts = []
+
+    # Campos básicos (simular una película genérica)
+    parts.append("type: movie")
+
+    if yr and len(yr) >= 2:
+        # Usar el año medio como referencia
+        avg_year = (yr[0] + yr[1]) // 2
+        parts.append(f"year: {avg_year}")
+
+    if dur and len(dur) >= 2:
+        # Usar duración media
+        avg_dur = (dur[0] + dur[1]) // 2
+        parts.append(f"duration_min: {avg_dur}")
+
+    # Géneros (mismo formato)
+    if genres:
+        parts.append(f"genres: {genres}")
+
+    # Directores (mismo formato)
+    if directors:
+        if isinstance(directors, list):
+            directors = ", ".join(directors[:5])
+        parts.append(f"directors: {directors}")
+
+    # Actores (mismo formato)
+    if actors:
+        if isinstance(actors, list):
+            actors = ", ".join(actors[:5])
+        parts.append(f"actors: {actors}")
 
     query_text = " | ".join(parts)
     print(f"\n🔍 Query generada: {query_text}")
