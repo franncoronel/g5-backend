@@ -1,7 +1,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.routes import generos_routes, personas_routes, preferencias_routes
+from src.routes import generos_routes, personas_routes, preferencias_routes, title_routes
 from sqlalchemy.orm import Session
 from src.database.entidades import Base, motor
 from src.ai.embeddings import ensure_title_embeddings, get_embedder
@@ -35,6 +35,7 @@ app.add_middleware(
 app.include_router(generos_routes.router)
 app.include_router(personas_routes.router)
 app.include_router(preferencias_routes.router)
+app.include_router(title_routes.router)
 
 
 

@@ -11,7 +11,7 @@ def correr_comando(comando):
   if result.returncode != 0:
     print(f"❌ Error al ejecutar: {comando}")
     sys.exit(result.returncode)
-  
+
   print(f"✅ Finalizado: {comando}")
 
 def main():
@@ -24,10 +24,10 @@ def main():
                 "python -m src.data_analysis.platform",
                 "python -m src.data_analysis.final_clean"
               ]
-  
+
   for cmd in commandos:
     correr_comando(cmd)
-  
+
   print("\nTodos los scripts se ejecutaron correctamente.")
 
 if __name__ == "__main__":
