@@ -93,6 +93,10 @@ def obtener_datos_tmdb(nombre, original=None, anio=None, id_tmdb=None):
     poster_path = pelicula.get("poster_path")
     poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else ""
 
+    # --- Backdrop ---
+    backdrop_path = pelicula.get("backdrop_path")
+    backdrop_url = f"https://image.tmdb.org/t/p/w780{backdrop_path}" if backdrop_path else ""
+
     # --- Idioma original ---
     idioma_original = pelicula.get("original_language", "")
 
@@ -111,6 +115,7 @@ def obtener_datos_tmdb(nombre, original=None, anio=None, id_tmdb=None):
         "id_tmdb": movie_id,
         "sinopsis": sinopsis,
         "poster": poster_url,
+        "backdrop": backdrop_url,
         "idioma_original": idioma_original,
         "plataformas": plataformas,
         "fecha_estreno": fecha_estreno
@@ -156,6 +161,7 @@ for fila in peliculas_a_buscar:
             "id_tmdb": datos.get("id_tmdb", ""),
             "sinopsis": datos.get("sinopsis", ""),
             "poster": datos.get("poster", ""),
+            "backdrop": datos.get("backdrop", ""),
             "idioma_original": datos.get("idioma_original", ""),
             "plataformas": datos.get("plataformas", ""),
             "fecha_estreno": datos.get("fecha_estreno", ""),
@@ -169,6 +175,7 @@ for fila in peliculas_a_buscar:
             "id_tmdb": "",
             "sinopsis": "",
             "poster": "",
+            "backdrop": "",
             "idioma_original": "",
             "plataformas": "",
             "fecha_estreno": "",
