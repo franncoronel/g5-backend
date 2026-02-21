@@ -1,3 +1,20 @@
+"""
+Correr con:
+    python -m src.data_analysis.merge
+"""
+'''
+* Correr sí y solo sí no se tiene el archivo 'peliculas_cargadas_actualizado.csv'
+  En el caso de no ternerlo, 
+
+Script es para hacer merge entre el archivo que contiene la info de la plataforma, poster, 
+sinopsis, idioma_original, etc. , con el archivo que contiene los backdrops de las películas.
+
+Solo se ejecuta si se lanzaron por separado los scripts de scraping para obtener_backdrops.py y enriquecer_titulos.py.
+
+El resultado es un nuevo archivo csv con la info combinada → peliculas_cargadas_actualizado.csv → RUTA_PELICULAS_TMDB (path)
+
+'''
+
 import pandas as pd
 import os
 from src.paths import RUTA_PLATFORM, DIR_DATA_PROCESADA, RUTA_BACKDROPS
