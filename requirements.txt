@@ -11,6 +11,7 @@ sentence_transformers
 # Jupyter y kernel
 jupyter
 ipykernel
+jupytext
 
 # Requerido solo para completado de datos
 # requests

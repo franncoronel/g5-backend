@@ -13,3 +13,4 @@ data/
 *.db
 .ipynb_checkpoints/
 .vscode/
+*.ipynb
