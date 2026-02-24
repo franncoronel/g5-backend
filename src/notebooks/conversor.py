@@ -27,9 +27,10 @@ def main():
 
   match opcion:
     case 1:
-      comandos= ["jupytext --set-formats py,ipynb src.notebooks/limpieza.py",
-                 ]
-      
+      comandos= ["jupytext --set-formats py,ipynb src/notebooks/limpieza.py",
+                 "jupytext --set-formats py,ipynb src/notebooks/prueba.py",
+                 "jupytext --set-formats py,ipynb src/notebooks/querys.py",
+                 "jupytext --set-formats py,ipynb src/notebooks/titles.py"]
       conversor(comandos)
 
     case 2:
